@@ -128,3 +128,32 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Maven, Java
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.classpath
+.project
+.settings
+*.idea
+.vscode
+*.iml
+# C compilation
+*.so
+# DB
+*.dat
+*.idn
+*.jrnl
+*.lock
+*.log
+# .env (production settings)
+prod.env
+# corese .git
+corese/ignore.git/
