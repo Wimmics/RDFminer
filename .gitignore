@@ -157,3 +157,5 @@ buildNumber.properties
 *.opt
 # corese .git
 corese/ignore.git/
+#
+*.rdb

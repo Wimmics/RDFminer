@@ -4,6 +4,9 @@
 const Logger = require("./tools/logger.js");
 const path = require("path");
 const logger = Logger.getLogger(path.basename(__filename));
+// load env var
+const dotenv = require("dotenv");
+dotenv.config();
 // import Express JS 
 // providing the app and server
 const express = require("./servers/express.js");

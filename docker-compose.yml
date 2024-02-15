@@ -18,7 +18,24 @@ services:
         source: ./IO
         target: /rdfminer/io
   # RDFminer-server
-
+  server:
+    restart: always
+    image: rdfminer-server:${RDFMINER_VERSION}
+    hostname: server
+    build:
+      context: ./RDFminer-server/.
+      args:
+        RDFMINER_SERVER_PORT: ${RDFMINER_SERVER_PORT}
+        RDFMINER_SERVER_MONGODB_PORT: ${RDFMINER_SERVER_MONGODB_PORT}
+        RDFMINER_SERVER_MONGODB_CONNECTION: ${RDFMINER_SERVER_MONGODB_CONNECTION}
+        RDFMINER_SERVER_AUTH_KEY: ${RDFMINER_SERVER_AUTH_KEY}
+        RDFMINER_SERVER_MONGODB_DATAPATH: ${RDFMINER_SERVER_MONGODB_DATAPATH}
+        RDFMINER_SERVER_REDIS_PORT: ${RDFMINER_SERVER_REDIS_PORT}
+        RDFMINER_SERVER_WS: ${RDFMINER_SERVER_WS}
+    ports:
+      - '${RDFMINER_SERVER_PORT}:${RDFMINER_SERVER_PORT}'
+    volumes:
+      - /app/node_modules
   # RDFminer-front
   front:
     restart: always
