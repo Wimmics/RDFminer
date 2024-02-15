@@ -15,9 +15,11 @@ services:
     command: launch
     volumes:
       - type: bind
-        source: ${RDFMINER_ROOT}/IO
+        source: ./IO
         target: /rdfminer/io
-  # RDFMiner-front
+  # RDFminer-server
+
+  # RDFminer-front
   front:
     restart: always
     image: rdfminer-front:${RDFMINER_VERSION}
@@ -34,6 +36,19 @@ services:
     volumes:
       - ./RDFminer-front/:/app/
       - /app/node_modules
+  # Corese 
+  corese:
+    restart: always
+    image: corese:${CORESE_VERSION}
+    hostname: corese
+    build:
+      context: ./corese/corese-server/build-docker/corese/.
+      args:
+        CORESE_VERSION: $CORESE_VERSION
+        CORESE_PORT: $CORESE_PORT
+        CORESE_STORAGE: $CORESE_STORAGE
+    ports:
+      - '${CORESE_PORT}:${CORESE_PORT}'
   # MongoDB
   mongo:
     restart: always

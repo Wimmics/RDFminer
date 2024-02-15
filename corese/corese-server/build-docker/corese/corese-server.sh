@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CORESE=/usr/local/corese
-JAR=$CORESE/corese-server-4.5.0.jar
+JAR=$CORESE/corese-server-$CORESE_VERSION.jar
 PROFILE=$CORESE/config/corese-profile.ttl
 PROPERTIES=$CORESE/config/corese-properties.properties
 OPTIONS=${OPTIONS:-}
@@ -73,7 +73,7 @@ java \
     -Dfile.encoding="UTF-8" \
     -Dlog4j.configurationFile=file:$LOG4J \
     -jar $JAR \
-    -p 8080 \
+    -p $CORESE_PORT \
     -lp \
     -pp file://$PROFILE \
     -init $PROPERTIES \

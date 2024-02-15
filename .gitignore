@@ -154,7 +154,6 @@ buildNumber.properties
 *.jrnl
 *.lock
 *.log
-# .env (production settings)
-prod.env
+*.opt
 # corese .git
 corese/ignore.git/
