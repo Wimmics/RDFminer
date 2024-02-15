@@ -23,6 +23,9 @@ WORKDIR $APP
 RUN apt-get update && apt-get install redis -y
 # installing dependencies
 COPY package*.json $APP/
+# install
+RUN npm install
+#
 COPY settings.json $APP/
 COPY swagger.js $APP/
 COPY app.js $APP/
@@ -39,7 +42,5 @@ COPY ./model $APP/model/
 COPY ./servers $APP/servers/
 COPY ./services $APP/services/
 COPY ./tools $APP/tools/
-# install
-RUN cd $APP && npm install
 # end
 CMD ["node", "app.js"]
