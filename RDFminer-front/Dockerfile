@@ -1,7 +1,6 @@
 FROM node:18
 
 # Import env variables
-ARG APP
 ARG RDFMINER_FRONT_PORT
 ARG RDFMINER_FRONT_ENDPOINT
 ARG RDFMINER_FRONT_SOCKET_ENDPOINT
@@ -9,15 +8,13 @@ ENV RDFMINER_FRONT_PORT=$RDFMINER_FRONT_PORT
 ENV RDFMINER_FRONT_ENDPOINT=$RDFMINER_FRONT_ENDPOINT
 ENV RDFMINER_FRONT_SOCKET_ENDPOINT=$RDFMINER_FRONT_SOCKET_ENDPOINT
 # build app...
+ENV APP=/app
 RUN mkdir $APP
+WORKDIR $APP
 # installing dependencies
 COPY package.json $APP/
 RUN cd $APP && npm install
 # copy all files in app folder
 COPY .   $APP/
-# expose port
-EXPOSE $RDFMINER_FRONT_PORT
-# enable exec
-RUN chmod +x /app/run.sh
 # launcher
-ENTRYPOINT ["./app/run.sh"]
+ENTRYPOINT ["./run.sh"]

@@ -41,6 +41,5 @@ COPY ./services $APP/services/
 COPY ./tools $APP/tools/
 # install
 RUN cd $APP && npm install
-RUN ls -al $APP && echo "toto"
 # end
 CMD ["node", "app.js"]

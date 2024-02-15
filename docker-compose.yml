@@ -44,14 +44,12 @@ services:
     build:
       context: ./RDFminer-front/.
       args:
-        APP: /app
         RDFMINER_FRONT_PORT: ${RDFMINER_FRONT_PORT}
         RDFMINER_FRONT_ENDPOINT: ${RDFMINER_FRONT_ENDPOINT}
         RDFMINER_FRONT_SOCKET_ENDPOINT: ${RDFMINER_FRONT_SOCKET_ENDPOINT}
     ports:
       - '${RDFMINER_FRONT_PORT}:${RDFMINER_FRONT_PORT}'
     volumes:
-      - ./RDFminer-front/:/app/
       - /app/node_modules
   # Corese 
   corese:
