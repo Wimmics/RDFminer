@@ -130,6 +130,7 @@ dist
 .pnp.*
 
 # Maven, Java
+target/
 *.class
 pom.xml.tag
 pom.xml.releaseBackup
