@@ -8,15 +8,20 @@ services:
     build:
       context: ./RDFminer-core/.
       args:
+        RDFMINER_CORE_PORT: ${RDFMINER_CORE_PORT}
         RDFMINER_VERSION: ${RDFMINER_VERSION}
         RDFMINER_SERVER_PORT: ${RDFMINER_SERVER_PORT}
         CORESE_PORT: ${CORESE_PORT}
         HOME: ${RDFMINER_HOME}
     command: launch
+    ports:
+      - '${RDFMINER_CORE_PORT}:${RDFMINER_CORE_PORT}'
     volumes:
       - type: bind
         source: ./IO
         target: /rdfminer/io
+    depends_on:
+      - corese
   # RDFminer-server
   server:
     restart: always
@@ -36,6 +41,9 @@ services:
       - '${RDFMINER_SERVER_PORT}:${RDFMINER_SERVER_PORT}'
     volumes:
       - /app/node_modules
+    depends_on:
+      - mongo
+      - redis
   # RDFminer-front
   front:
     restart: always
@@ -51,6 +59,8 @@ services:
       - '${RDFMINER_FRONT_PORT}:${RDFMINER_FRONT_PORT}'
     volumes:
       - /app/node_modules
+    depends_on:
+      - server
   # Corese 
   corese:
     restart: always
@@ -75,3 +85,14 @@ services:
       - type: bind
         source: ${RDFMINER_SERVER_MONGODB_DATAPATH}/data
         target: /data/db
+  # Redis-server
+  redis:
+    restart: always
+    image: redis:7.2.4-alpine
+    hostname: redis
+    ports:
+      - '${RDFMINER_SERVER_REDIS_PORT}:${RDFMINER_SERVER_REDIS_PORT}'
+    volumes:
+      - type: bind
+        source: ${RDFMINER_SERVER_REDIS_DATAPATH}/data
+        target: /data
