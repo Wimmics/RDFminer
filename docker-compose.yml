@@ -39,11 +39,12 @@ services:
         RDFMINER_SERVER_WS: ${RDFMINER_SERVER_WS}
     ports:
       - '${RDFMINER_SERVER_PORT}:${RDFMINER_SERVER_PORT}'
-    volumes:
-      - /app/node_modules
+    # volumes:
+    #   - /app/node_modules
     depends_on:
       - mongo
       - redis
+      - rdfminer
   # RDFminer-front
   front:
     restart: always

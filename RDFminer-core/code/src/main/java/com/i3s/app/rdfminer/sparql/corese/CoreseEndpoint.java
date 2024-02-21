@@ -99,7 +99,7 @@ public class CoreseEndpoint {
     }
 
     /**
-     * SELECT (count([<i>distinct</i>] <b>var</b>) as ?n) WHERE { <b>body</b> } in SERVICE clause
+     * SELECT (count([<i>distinct</i>] <b>var</b>) as ?n) WHERE { <b>body</b> }
      */
     public int count(String var, String sparql, boolean distinct) throws URISyntaxException, IOException {
         Parameters parameters = Parameters.getInstance();
@@ -117,7 +117,7 @@ public class CoreseEndpoint {
             return -1;
         }
         try {
-            return Integer.parseInt(Objects.requireNonNull(ResultParser.getResultsFromVariable(var, resultAsJSON)).get(0));
+            return Integer.parseInt(Objects.requireNonNull(ResultParser.getResultsFromVariable("?n", resultAsJSON)).get(0));
         } catch (NullPointerException e) {
             logger.error("Error during the counting ...");
             logger.error("Result as JSON: " + resultAsJSON);

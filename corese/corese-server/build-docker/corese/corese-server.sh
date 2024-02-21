@@ -77,4 +77,5 @@ java \
     -lp \
     -pp file://$PROFILE \
     -init $PROPERTIES \
+    -su \
     "$OPTIONS"

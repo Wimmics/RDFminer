@@ -36,7 +36,6 @@ ENV ENVIRONMENT_FOR_NODE=$APP/.env
 RUN ./setup_env.sh
 # copy code
 COPY ./auth $APP/auth/
-COPY ./docker $APP/docker/
 COPY ./logs $APP/logs/
 COPY ./model $APP/model/
 COPY ./servers $APP/servers/

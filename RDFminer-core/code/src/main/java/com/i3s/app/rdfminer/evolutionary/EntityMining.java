@@ -1,6 +1,5 @@
 package com.i3s.app.rdfminer.evolutionary;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.i3s.app.rdfminer.Endpoint;
 import com.i3s.app.rdfminer.Global;
 import com.i3s.app.rdfminer.Parameters;
@@ -120,9 +119,7 @@ public class EntityMining {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             // PUT request
             HttpPut put = new HttpPut(Endpoint.API_RESULTS);
-            // Mapping Results instance in JSON string using Jackson
-            String updated = new ObjectMapper().writeValueAsString(results);
-            put.setEntity(new StringEntity(updated, ContentType.APPLICATION_JSON));
+            put.setEntity(new StringEntity(results.toJSON().toString(), ContentType.APPLICATION_JSON));
             logger.info("/PUT - update results ...");
             HttpResponse response = httpClient.execute(put);
             logger.info("Status code: " + response.getStatusLine().getStatusCode());

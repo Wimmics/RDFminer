@@ -8,7 +8,7 @@ const RedisServer = require('redis-server');
 // Bull
 const Bull = require("bull");
 // launcher
-const Docker = require("../docker/docker");
+const Job = require("../tools/job");
 
 class Queue {
 
@@ -27,7 +27,7 @@ class Queue {
         // Init queue system using Bull
         this.bull = new Bull("rdfminer-front-queue", {
             redis: {
-                host: 'localhost',
+                host: 'redis',
                 port: process.env.RDFMINER_SERVER_REDIS_PORT
             },
             limiter: {
@@ -41,28 +41,25 @@ class Queue {
         });
         // Process tasks for future jobs
         this.bull.process(async (job) => {
-            logger.warn("process the job(" + job.id + ") ...");
-            const task = await Docker.exec(job);
+            logger.info("launching job " + job.id + " ...");
+            const task = await Job.exec(job);
             return task;
         });
         // listeners
         this.bull.on("waiting", id => {
-            logger.warn("Job(" + id + ") is waiting...");
+            logger.warn("job " + id + " is waiting...");
         });
         this.bull.on("completed", job => {
-            logger.warn("Job(" + job.id + ") is completed...");
+            logger.warn("job " + job.id + " is completed !");
         });
         this.bull.on("failed", (job, error) => {
-            logger.error("Job(" + job.id + ") has been failed: " + error.message);
+            logger.error("job " + job.id + " has been failed: " + error.message);
         });
     }
 
     async addJob(data) {
         const job = await this.bull.add(data, { delay: 0, removeOnComplete: true });
-        logger.warn("The job has been submitted !");
-        this.bull.getJobs().then((jobs) => {
-            logger.warn("debug: " + jobs.length);
-        });
+        logger.warn("job " + job.id + " has been submitted");
     }
 
 }
