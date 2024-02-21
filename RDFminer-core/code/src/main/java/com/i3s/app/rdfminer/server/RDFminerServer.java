@@ -1,5 +1,6 @@
 package com.i3s.app.rdfminer.server;
 
+import com.i3s.app.rdfminer.Global;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -22,7 +23,7 @@ public class RDFminerServer {
     public static void main(String[] args) throws Exception {
         // init server
         // Integer.parseInt(System.getenv("RDFMINER_CORE_PORT")
-        int port = 8080;
+        int port = Global.SERVER_PORT;
         //
         Server server = new Server(port);
         //
@@ -35,6 +36,7 @@ public class RDFminerServer {
         //
         server.setHandler(context);
         try {
+            MyLogger.info("The RDFminer-core server has been launched and listen on the port " + port + " !");
             server.start();
             server.join();
         } finally {

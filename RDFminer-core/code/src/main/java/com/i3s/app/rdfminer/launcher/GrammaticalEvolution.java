@@ -14,7 +14,6 @@ import com.i3s.app.rdfminer.evolutionary.types.TypeCrossover;
 import com.i3s.app.rdfminer.evolutionary.types.TypeMutation;
 import com.i3s.app.rdfminer.evolutionary.types.TypeSelection;
 import com.i3s.app.rdfminer.generator.Generator;
-import com.i3s.app.rdfminer.output.Results;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -29,12 +28,9 @@ public class GrammaticalEvolution {
 
     public static int nMutation;
 
-    private Parameters parameters;
-
-    private Results results;
+    private final Parameters parameters;
 
     public GrammaticalEvolution() {
-        this.results = Results.getInstance();
         this.parameters = Parameters.getInstance();
     }
 
@@ -78,7 +74,6 @@ public class GrammaticalEvolution {
             if (entities == null) {
                 break;
             }
-//            editCache(CACHE_PATH, entities, stopCriterion.getCurGeneration(), curCheckpoint);
             // reset crossover and mutation counter
             nCrossover = 0;
             nMutation = 0;
@@ -86,69 +81,8 @@ public class GrammaticalEvolution {
             stopCriterion.update();
         }
         logger.info("===============");
-        // end of the process ...
-        // fill content in json output file
-//        for(Entity entity : entities) {
-//            RDFminer.content.add(entity.toJSON());
-//        }
-//        if (entities != null) {
-//            this.results.setEntities(entities);
-//        }
-//        logger.info(RDFminer.content.size() + " entities has been added in " + Global.RESULTS_FILENAME);
         logger.info("Evolutionary process is done...");
-        // System.exit(0);
     }
-
-//    public void editCache(String cachePath, ArrayList<Entity> entities, int curGeneration, int curCheckpoint) throws IOException {
-//        PrintWriter writer = new PrintWriter(cachePath, StandardCharsets.UTF_8);
-//        ArrayList<JSONObject> individualsJSON = new ArrayList<>();
-//        for(Entity entity : entities) {
-//            // fix chromosome content
-//            String genotype = entity.individual.getGenotype().get(0).toString().replace("Chromosome Contents: ", "");
-//            double fitness = entity.individual.getFitness().getDouble();
-//            individualsJSON.add(new IndividualJSON(genotype, fitness).toJSON());
-//        }
-//        Cache cache = new Cache(curGeneration, curCheckpoint, parameters.getSizeChromosome(), individualsJSON);
-//        writer.println(cache.toJSON().toString(2));
-//        writer.close();
-//    }
-
-//    public void writeAndFinish() {
-//        try {
-//            logger.info("Edit JSON file results ...");
-//            RDFminer.results.statistics = RDFminer.stats.toJSON();
-////            RDFMiner.results.content = RDFMiner.content;
-//            // save entities
-//            sendEntities();
-//            RDFminer.output.write(RDFminer.results.toJSON().toString(2));
-//            RDFminer.output.close();
-//            // if novelty seach is used
-//            if(RDFminer.similarityMap != null) {
-//                RDFminer.similarityMap.editFile();
-//            }
-//        } catch (IOException e) {
-//            logger.error("I/O error while closing JSON writer: " + e.getMessage());
-//            e.printStackTrace();
-//            System.exit(1);
-//        }
-//    }
-
-//    public void sendEntities() {
-//        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-//            JSONObject toSend = new JSONObject();
-//            toSend.put(Results.USER_ID, parameters.getUserID());
-//            toSend.put(Results.PROJECT_NAME, parameters.getProjectName());
-//            toSend.put(Results.ENTITIES, RDFminer.content);
-//            HttpPut put = new HttpPut(Endpoint.API_RESULTS);
-//            put.setEntity(new StringEntity(toSend.toString(), ContentType.APPLICATION_JSON));
-//            logger.info("PUT request: updating entities ...");
-//            HttpResponse response = httpClient.execute(put);
-//            logger.info("Status code: " + response.getStatusLine().getStatusCode());
-//            logger.info(new BasicResponseHandler().handleResponse(response));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void logUsedParameters(Parameters parameters) {
         logger.info("=== RESOURCES SETTINGS ==============================");

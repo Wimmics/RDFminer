@@ -19,7 +19,7 @@ public class Results {
 
     private String userID;
 
-    private String projectName;
+    private String projectID;
 
     /**
      * This is a key to retrieve logs file into RDFminer logs folder if needed
@@ -34,8 +34,8 @@ public class Results {
         this.userID = userID;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setProjectID(String projectID) {
+        this.projectID = projectID;
         // define logs filename
         this.setLogs();
     }
@@ -73,7 +73,7 @@ public class Results {
 //    }
 
     public void setLogs() {
-        this.logs = Instant.now().truncatedTo(ChronoUnit.MILLIS) + "_" + this.projectName.hashCode() + ".log";
+        this.logs = Instant.now().truncatedTo(ChronoUnit.MILLIS) + "_" + this.projectID.hashCode() + ".log";
     }
 
     public String getLogs() {
@@ -94,8 +94,8 @@ public class Results {
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
-        json.put("userID", this.userID);
-        json.put("projectName", this.projectName);
+//        json.put("userID", this.userID);
+//        json.put("projectName", this.projectID);
         json.put("logs", this.logs);
         json.put("entities", new JSONArray(entities));
         json.put("generations", new JSONArray(generations));

@@ -10,6 +10,7 @@ import com.i3s.app.rdfminer.launcher.Evaluator;
 import com.i3s.app.rdfminer.launcher.GrammaticalEvolution;
 import com.i3s.app.rdfminer.output.Results;
 import com.i3s.app.rdfminer.output.SimilarityMap;
+import com.i3s.app.rdfminer.sparql.corese.CoreseEndpoint;
 import org.apache.log4j.*;
 
 import java.io.IOException;
@@ -96,7 +97,15 @@ public class RDFminer {
 			// OWL axioms or SHACL shapes assessment
 			// The system can assess (1) SubClassOf and DisjointClass oxioms and (2) SHACL shapes
 			case Mod.AXIOM_ASSESSMENT:
+				// launch evaluator
+				evaluator = new Evaluator();
+				evaluator.run(this.parameters.getMod());
+				break;
 			case Mod.SHAPE_ASSESSMENT:
+				// count the total number of RDF triples in the graph
+				// use the result for each prob. shacl validation
+				CoreseEndpoint endpoint = new CoreseEndpoint(this.parameters.getNamedDataGraph(), this.parameters.getPrefixes());
+				Global.nTriples = endpoint.count("*", "?s ?p ?o", false);
 				// launch evaluator
 				evaluator = new Evaluator();
 				evaluator.run(this.parameters.getMod());
@@ -128,7 +137,7 @@ public class RDFminer {
 		for(String line : Global.BANNER) {
 			logger.info(line);
 		}
-		logger.info("This is RDFminer v." + System.getenv("RDFMINER_VERSION") + " !");
+		logger.info("This is RDFminer v." + Global.VERSION + " !");
 	}
 
 }

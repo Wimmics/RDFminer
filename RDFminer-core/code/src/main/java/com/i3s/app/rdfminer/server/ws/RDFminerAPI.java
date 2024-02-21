@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  * RDFminer Web services
  * endpoints to exploit RDFminer tools (SHACL or OWL axioms mining; SHACL Validation; ...)
  */
-@Path("/")
+@Path("/core")
 public class RDFminerAPI {
 
     @POST
@@ -31,11 +31,11 @@ public class RDFminerAPI {
         // map parameters provided by user
         Parameters parameters = new ObjectMapper().readValue(params, Parameters.class);
 //        new ObjectMapper().updateValue(parameters, params);
-        MyLogger.info("project: " + parameters.getProjectName() + " is launched by " + parameters.getUserID());
+        MyLogger.info("project: " + parameters.getProjectID() + " is launched by " + parameters.getUserID());
         // instanciate results
         Results results = Results.getInstance();
         results.setUserID(parameters.getUserID());
-        results.setProjectName(parameters.getProjectName());
+        results.setProjectID(parameters.getProjectID());
         results.resetLists();
         // init RDFminer processes manager
         RDFminerProcess processes = RDFminerProcess.getInstance();
@@ -51,14 +51,14 @@ public class RDFminerAPI {
                 // others cases
                 MyLogger.error("error during the RDFminer execution ...");
                 MyLogger.error(e.getMessage());
-                MyLogger.error("project " + parameters.getProjectName() + " (user: " + parameters.getUserID() + ") failed !");
+                MyLogger.error("project " + parameters.getProjectID() + " (user: " + parameters.getUserID() + ") failed !");
             }
         });
         // submit task
         if (processes.setProcess(parameters.getUserID(), task)) {
             // launch
             processes.startThread(parameters.getUserID());
-            MyLogger.info("project: " + parameters.getProjectName() + " (user: " + parameters.getUserID() + ") finished !");
+            MyLogger.info("project: " + parameters.getProjectID() + " (user: " + parameters.getUserID() + ") finished !");
             return Response.ok(results.toJSON().toString(2)).build();
         }
         return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("RDFminer-core is unavalaible (already in use, maintenance, ...), try it latter !").build();

@@ -17,11 +17,11 @@ public class Parameters {
 
 	private Parameters() {}
 
-	@JsonProperty("username")
+	@JsonProperty("userID")
 	private String userID = "admin";
 
-	@JsonProperty("projectName")
-	private String projectName = "results";
+	@JsonProperty("projectID")
+	private String projectID = "results";
 
 	@JsonProperty("mod")
 	private int mod;
@@ -112,14 +112,12 @@ public class Parameters {
 
 	public int maxValCodon = Integer.MAX_VALUE;
 
-	public int checkpoint = 1;
-
 	public String getUserID() {
 		return userID;
 	}
 
-	public String getProjectName() {
-		return projectName;
+	public String getProjectID() {
+		return projectID;
 	}
 
 	public int getMod() {

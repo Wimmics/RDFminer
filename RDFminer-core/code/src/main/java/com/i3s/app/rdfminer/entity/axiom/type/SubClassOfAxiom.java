@@ -127,7 +127,7 @@ public class SubClassOfAxiom extends Axiom {
 		if(!complex && endpoint.ask(subClass + " rdfs:subClassOf " + superClass)) {
 			// in this case, we set pos = nec = 1.0 as consequence to its existance in ontology
 			logger.debug("This candidate is already a valid OWL SubClassOf axiom !");
-			referenceCardinality = numConfirmations = endpoint.count("?x", subClass.graphPattern);
+			referenceCardinality = numConfirmations = endpoint.count("?x", subClass.graphPattern, true);
 			numExceptions = 0;
 			ari = ARI();
 			return;
@@ -144,7 +144,7 @@ public class SubClassOfAxiom extends Axiom {
 		exceptions = new ArrayList<>();
 		long timeSpent;
 		// The reference cardinality will count all the instances involved by the current axiom
-		referenceCardinality = endpoint.count("?x", subClass.graphPattern);
+		referenceCardinality = endpoint.count("?x", subClass.graphPattern, true);
 		if(referenceCardinality == -1) {
 			logger.warn("Timeout reached during the computation of the number of reference cardinality !");
 			referenceCardinality = 0;
@@ -153,13 +153,13 @@ public class SubClassOfAxiom extends Axiom {
 		}
 //		logger.info("Reference cardinality = " + referenceCardinality);
 		// The number of instances linked with the subClass of the given axiom
-		numIntersectingClasses = endpoint.count("?x", subClass.graphPattern + " ?x a ?D . ");
+		numIntersectingClasses = endpoint.count("?x", subClass.graphPattern + " ?x a ?D . ", true);
 		if(numIntersectingClasses == -1) {
 			logger.warn("Timeout reached during the computation of the number of intersecting classes !");
 			isTimeout = true;
 			numIntersectingClasses = 0;
 		}
-		numConfirmations = endpoint.count("?x", subClass.graphPattern + "\n" + superClass.graphPattern);
+		numConfirmations = endpoint.count("?x", subClass.graphPattern + "\n" + superClass.graphPattern, true);
 		if (numConfirmations == -1) {
 			logger.warn("Timeout reached during the computation of the number of confirmations !");
 			numConfirmations = 0;
