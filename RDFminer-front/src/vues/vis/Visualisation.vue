@@ -5,7 +5,7 @@
             <CAccordionHeader>Dashboard</CAccordionHeader>
             <CAccordionBody>
                 <!-- <VisuEntities v-if="isReady" :results="results"></VisuEntities> -->
-                <VisGrammaticalEvolution v-if="isReady && task=='Mining'" :results="results" :path="path" :task="'Mining'"></VisGrammaticalEvolution>
+                <VHeader v-if="isReady && task=='Mining'" :results="results" :path="path" :task="'Mining'"></VHeader>
                 <br/>
                 <VueStatistics v-if="isReady && task=='Mining'" :results="results"></VueStatistics>
                 <!-- Eval -->
@@ -40,7 +40,7 @@ import { CAccordion, CAccordionItem, CAccordionHeader, CAccordionBody } from '@c
 import VueStatistics from './plot/Statistics.vue';
 import VisuEntities from './Entities.vue';
 import ConsoleLog from './ConsoleLog.vue';
-import VisGrammaticalEvolution from './plot/GrammaticalEvolution.vue';
+import VHeader from './plot/Header.vue';
 import VisAssessment from './plot/Assessment.vue';
 // import axios from 'axios';
 import BubbleEntities from './plot/BubbleEntities.vue';
@@ -50,7 +50,7 @@ export default {
     name: 'VueVisualisation',
     components: {
         VueStatistics, VisuEntities, CAccordion, CAccordionItem, CAccordionHeader, 
-        CAccordionBody, ConsoleLog, VisGrammaticalEvolution, VisAssessment, BubbleEntities
+        CAccordionBody, ConsoleLog, VHeader, VisAssessment, BubbleEntities
     },
     data() {
         return {

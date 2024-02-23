@@ -10,8 +10,6 @@ import WelcomeHome from './vues/Home.vue'
 import VueVisualisation from './vues/vis/Visualisation.vue'
 import MyProjects from './vues/projects/MyProjects.vue'
 import RDFMinerPublications from './vues/Publications.vue'
-// import SwaggerDoc from './rdfminer/SwaggerDoc.vue'
-// import LogIn from './vues/LogIn.vue'
 
 const cookiesConfig = {
     expireTimes: "1d",
@@ -22,7 +20,7 @@ const routes = [
     { path: '/', component: WelcomeHome },
     { path: '/projects', component: MyProjects },
     // here, the id corresponds to the results ID (linked to the project)
-    { path: '/visualisation/:task/:resultsId', component: VueVisualisation, name: "VueVisualisation" },
+    { path: '/visualisation/:task/:resultsID', component: VueVisualisation, name: "VueVisualisation" },
     { path: '/publications', component: RDFMinerPublications },
     // { path: '/api', component: SwaggerDoc },
     // { path: '/login', component: LogIn }

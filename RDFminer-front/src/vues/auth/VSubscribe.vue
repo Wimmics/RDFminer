@@ -66,7 +66,7 @@ export default {
     },
     methods: {
         async submit(username, password) {
-            const user = await post("api/auth", {}, {
+            const user = await post("api/register", {}, {
                 username: username,
                 password: password
             });

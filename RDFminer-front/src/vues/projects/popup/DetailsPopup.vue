@@ -12,10 +12,10 @@
                     <!-- SPARQL Endpoint -->
                     <CRow>
                         <CCol sm="4">
-                            <CFormLabel>SPARQL Endpoint</CFormLabel>
+                            <CFormLabel>RDF data graph</CFormLabel>
                         </CCol>
                         <CCol sm="8">
-                            <a :href="data.targetSparqlEndpoint">{{ data.targetSparqlEndpoint }}</a>
+                            <a :href="data.namedDataGraph">{{ data.namedDataGraph }}</a>
                         </CCol>
                     </CRow>
                     <!-- Prefixes -->
@@ -31,7 +31,7 @@
                 </CCardBody>
             </CCard>
             <br />
-            <CCard v-if="data.task == 'Mining'">
+            <CCard v-if="data.mod == 1 || data.mod == 3">
                 <CCardTitle>
                     Grammatical evolution settings
                 </CCardTitle>
@@ -42,12 +42,12 @@
                             <CFormLabel class="col-form-label">Type of entities</CFormLabel>
                         </CCol>
                         <CCol sm="8">
-                            <CFormInput :value="data.mod.includes('-rs') ? 'SHACL Shapes' : 'OWL Axioms'" readonly
+                            <CFormInput :value="data.mod == 3 ? 'SHACL Shapes' : 'OWL Axioms'" readonly
                                 plain-text style="font-weight: bold;" />
                         </CCol>
                     </CRow>
                     <!-- Probabilistic SHACL ? -->
-                    <CRow v-if="data.settings.shaclProb != 0">
+                    <CRow v-if="data.probShaclP != 0">
                         <CCol sm="4">
                             <CFormLabel class="col-form-label">Probabilistic SHACL:</CFormLabel>
                         </CCol>
@@ -55,13 +55,13 @@
                             <CFormLabel class="col-form-label">Significance level</CFormLabel>
                         </CCol>
                         <CCol sm="2">
-                            <CFormInput :value="data.settings.shaclAlpha * 100 + '%'" readonly plain-text />
+                            <CFormInput :value="data.probShaclAlpha * 100 + '%'" readonly plain-text />
                         </CCol>
                         <CCol sm="2">
                             <CFormLabel class="col-form-label">P-Value</CFormLabel>
                         </CCol>
                         <CCol sm="2">
-                            <CFormInput :value="data.settings.shaclProb * 100 + '%'" readonly plain-text />
+                            <CFormInput :value="data.probShaclP * 100 + '%'" readonly plain-text />
                         </CCol>
                     </CRow>
                     <!-- BNF Grammar -->
@@ -70,7 +70,7 @@
                             <CFormLabel class="col-form-label">BNF Grammar</CFormLabel>
                         </CCol>
                         <CCol sm="8">
-                            <CFormTextarea readonly>{{ data.settings.bnf }}</CFormTextarea>
+                            <CFormTextarea readonly>{{ data.bnf }}</CFormTextarea>
                         </CCol>
                     </CRow>
                     <!-- Chromosome size -->
@@ -79,7 +79,7 @@
                             <CFormLabel class="col-form-label">Chromosome size</CFormLabel>
                         </CCol>
                         <CCol sm="8">
-                            <CFormInput :value="data.settings.sizeChromosome" readonly plain-text />
+                            <CFormInput :value="data.sizeChromosome" readonly plain-text />
                         </CCol>
                     </CRow>
                     <!-- Pop size / Effort -->
@@ -88,14 +88,24 @@
                             <CFormLabel class="col-form-label">Population size</CFormLabel>
                         </CCol>
                         <CCol sm="2">
-                            <CFormInput :value="data.settings.populationSize" readonly plain-text />
+                            <CFormInput :value="data.populationSize" readonly plain-text />
                         </CCol>
-                        <CCol sm="4">
-                            <CFormLabel class="col-form-label">Effort</CFormLabel>
-                        </CCol>
-                        <CCol sm="2">
-                            <CFormInput :value="data.settings.effort" readonly plain-text />
-                        </CCol>
+                        <div v-if="data.stopCriterion == 1">
+                            <CCol sm="4">
+                                <CFormLabel class="col-form-label">Time allocated (min)</CFormLabel>
+                            </CCol>
+                            <CCol sm="2">
+                                <CFormInput :value="data.maxMiningTime" readonly plain-text />
+                            </CCol>
+                        </div>
+                        <div v-else>
+                            <CCol sm="4">
+                                <CFormLabel class="col-form-label">Effort</CFormLabel>
+                            </CCol>
+                            <CCol sm="2">
+                                <CFormInput :value="data.effort" readonly plain-text />
+                            </CCol>
+                        </div>
                     </CRow>
                     <!-- Elite -->
                     <CRow>
@@ -103,7 +113,7 @@
                             <CFormLabel class="col-form-label">Elite selection rate</CFormLabel>
                         </CCol>
                         <CCol sm="8">
-                            <CFormInput :value="(data.settings.eliteSelectionRate * 100) + '%'" readonly plain-text />
+                            <CFormInput :value="(data.eliteSelectionRate * 100) + '%'" readonly plain-text />
                         </CCol>
                     </CRow>
                     <!-- Selection / Crossover / Mutation-->
@@ -113,12 +123,12 @@
                         </CCol>
                         <CCol sm="4">
                             <CFormInput
-                                :value="selectionType[parseInt(data.settings.selectionType) - 1].description + ' (' + (data.settings.selectionRate * 100) + '%)'"
+                                :value="selectionType[parseInt(data.selectionType) - 1].description + ' (' + (data.selectionRate * 100) + '%)'"
                                 readonly plain-text />
                         </CCol>
                         <CCol sm="4">
                             <CFormInput
-                                :value="'Tournament size (' + (data.settings.tournamentSelectionRate * 100) + '% of the population)'"
+                                :value="'Tournament size (' + (data.tournamentSelectionRate * 100) + '% of the population)'"
                                 readonly plain-text />
                         </CCol>
                     </CRow>
@@ -128,7 +138,7 @@
                         </CCol>
                         <CCol sm="8">
                             <CFormInput
-                                :value="crossoverType[parseInt(data.settings.crossoverType) - 1].description + ' (' + (data.settings.crossoverRate * 100) + '%)'"
+                                :value="crossoverType[parseInt(data.crossoverType) - 1].description + ' (' + (data.proCrossover * 100) + '%)'"
                                 readonly plain-text />
                         </CCol>
                     </CRow>
@@ -138,7 +148,7 @@
                         </CCol>
                         <CCol sm="8">
                             <CFormInput
-                                :value="mutationType[parseInt(data.settings.mutationType) - 1].description + ' (' + (data.settings.selectionRate * 100) + '%)'"
+                                :value="mutationType[parseInt(data.mutationType) - 1].description + ' (' + (data.proMutation * 100) + '%)'"
                                 readonly plain-text />
                         </CCol>
                     </CRow>
@@ -156,12 +166,12 @@
                             <CFormLabel class="col-form-label">Type of entities</CFormLabel>
                         </CCol>
                         <CCol sm="8">
-                            <CFormInput :value="data.mod.includes('-rs') ? 'SHACL Shapes' : 'OWL Axioms'" readonly
+                            <CFormInput :value="data.mod == 4 ? 'SHACL Shapes' : 'OWL Axioms'" readonly
                                 plain-text style="font-weight: bold;" />
                         </CCol>
                     </CRow>
                     <!-- Probabilistic SHACL ? -->
-                    <CRow v-if="data.settings.shaclProb != 0">
+                    <CRow v-if="data.probShaclP != 0">
                         <CCol sm="4">
                             <CFormLabel class="col-form-label">Probabilistic SHACL:</CFormLabel>
                         </CCol>
@@ -169,13 +179,13 @@
                             <CFormLabel class="col-form-label">Significance level</CFormLabel>
                         </CCol>
                         <CCol sm="2">
-                            <CFormInput :value="data.settings.shaclAlpha * 100 + '%'" readonly plain-text />
+                            <CFormInput :value="data.probShaclAlpha * 100 + '%'" readonly plain-text />
                         </CCol>
                         <CCol sm="2">
                             <CFormLabel class="col-form-label">P-Value</CFormLabel>
                         </CCol>
                         <CCol sm="2">
-                            <CFormInput :value="data.settings.shaclProb * 100 + '%'" readonly plain-text />
+                            <CFormInput :value="data.probShaclP * 100 + '%'" readonly plain-text />
                         </CCol>
                     </CRow>
                     <!-- Input file -->
@@ -184,7 +194,7 @@
                             <CFormLabel class="col-form-label">Entities provided</CFormLabel>
                         </CCol>
                         <CCol sm="8">
-                            <CFormTextarea readonly>{{ data.settings.shapes }}</CFormTextarea>
+                            <CFormTextarea readonly>{{ data.shapes }}</CFormTextarea>
                         </CCol>
                     </CRow>
                 </CCardBody>
@@ -228,11 +238,11 @@ export default {
         async setupParams() {
             const params = (await get("api/params", {}))[0];
             // selection
-            this.selectionType = params.selection.values;
+            this.selectionType = params.selectionType.values;
             // crossover
-            this.crossoverType = params.crossover.values;
+            this.crossoverType = params.crossoverType.values;
             // mutation
-            this.mutationType = params.mutation.values;
+            this.mutationType = params.mutationType.values;
         }
     },
     mounted() {

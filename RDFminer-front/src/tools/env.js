@@ -1,8 +1,6 @@
 import io from "socket.io-client";
 
-console.log("~~~")
-console.log(process.env.NODE_ENV)
-console.log("~~~")
+const serverUrl = process.env.NODE_ENV == "production" ? "http://134.59.130.136" : "http://localhost:" + process.env.VUE_APP_RDFMINER_SERVER_PORT;
 
-export const base = process.env.RDFMINER_FRONT_ENDPOINT
-export const socket = io(process.env.RDFMINER_FRONT_SOCKET_ENDPOINT)
+export const base = serverUrl;
+export const socket = io(serverUrl);

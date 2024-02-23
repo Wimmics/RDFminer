@@ -54,13 +54,3 @@ express.server.listen(process.env.RDFMINER_SERVER_PORT, '0.0.0.0', () => {
     logger.info(`Example app listening on port ${process.env.RDFMINER_SERVER_PORT}`)
     logger.info("##########################################")
 });
-
-// Close Redis service properly on shutdown
-process.on('SIGTERM', () => {
-    logger.warn("Server closed");
-    // close redis as well
-    redisServer.close().then(() => {
-        logger.warn("Closing Redis server ...");
-    });
-    process.exit(err ? 1 : 0);
-});

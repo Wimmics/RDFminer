@@ -206,14 +206,14 @@ export default {
             ]
         };
         // verify if any results (or all ?) are already defined
-        if (toRaw(this.results.statistics.generations.length) != 0) {
-            for (let i = 0; i < toRaw(this.results.statistics.generations.length); i++) {
-                // console.log(this.results.statistics.generations[i].numIndividualsWithNonNullFitness)
-                // console.log(toRaw(this.results.statistics.generations[i]));
-                this.ind_non_null_chart.datasets[0].data.push(toRaw(this.results.statistics.generations[i].numIndividualsWithNonNullFitness));
-                this.ind_fitness_chart.datasets[0].data.push(toRaw(this.results.statistics.generations[i].averageFitness));
-                this.pop_evol_chart.datasets[0].data.push(toRaw(this.results.statistics.generations[i].populationDevelopmentRate));
-                this.pop_evol_chart.datasets[1].data.push(toRaw(this.results.statistics.generations[i].diversityCoefficient));
+        if (toRaw(this.results.generations.length) != 0) {
+            for (let i = 0; i < toRaw(this.results.generations.length); i++) {
+                // console.log(this.results.generations[i].numIndividualsWithNonNullFitness)
+                // console.log(toRaw(this.results.generations[i]));
+                this.ind_non_null_chart.datasets[0].data.push(toRaw(this.results.generations[i].numIndividualsWithNonNullFitness));
+                this.ind_fitness_chart.datasets[0].data.push(toRaw(this.results.generations[i].averageFitness));
+                this.pop_evol_chart.datasets[0].data.push(toRaw(this.results.generations[i].populationDevelopmentRate));
+                this.pop_evol_chart.datasets[1].data.push(toRaw(this.results.generations[i].diversityCoefficient));
                 // update labels
                 this.ind_non_null_chart.labels.push(this.ind_non_null_chart.datasets[0].data.length);
                 this.ind_fitness_chart.labels.push(this.ind_non_null_chart.datasets[0].data.length);

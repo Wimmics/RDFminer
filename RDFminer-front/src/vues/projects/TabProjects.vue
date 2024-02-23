@@ -9,7 +9,7 @@
             <CTableBody>
                 <CTableRow v-for="project in projects" :key="project" align="middle">
                     <CTableHeaderCell scope="row">{{ project.projectName }}</CTableHeaderCell>
-                    <CTableDataCell>{{ project.task }}</CTableDataCell>
+                    <CTableDataCell>{{ project.mod }}</CTableDataCell>
                     <!-- <CTableDataCell><a :href="project.targetSparqlEndpoint">{{ project.targetSparqlEndpoint }}</a> -->
                     <!-- </CTableDataCell> -->
                     <CTableDataCell>
@@ -65,7 +65,7 @@
 
 <script>
 import { CTable, CTableHead, CTableBody, CTableFoot, CTableRow, CTableHeaderCell, CTableDataCell, CSpinner, CButton, CImage } from '@coreui/vue';
-import { useCookies } from 'vue3-cookies';
+// import { useCookies } from 'vue3-cookies';
 import { get } from "@/tools/api";
 import { socket } from "@/tools/env";
 
@@ -93,7 +93,7 @@ export default {
             const id = await get("api/results", { projectName: p.projectName });
             if (id) {
                 // redirect on visualisation route with the results ID linked to the project
-                this.$router.push({ name: "VueVisualisation", params: { resultsId: id, task: p.task } });
+                this.$router.push({ name: "VueVisualisation", params: { resultsID: id, task: p.task } });
             }
         },
         getColor(status) {
@@ -109,23 +109,10 @@ export default {
                     return "danger";
             }
         },
-        /**
-         * return the type of entities from the mining/evaluating task
-         * @param {String} type 
-         */
-        getType(type) {
-            if (type.includes("-rs") || type.includes("-sf")) {
-                return "SHACL Shapes";
-            } else if (type.includes("-ra") || type.includes("-af")) {
-                return "OWL Axioms";
-            } else {
-                return "Unknown";
-            }
-        }
     },
     data() {
         return {
-            cookies: useCookies(["token", "id"]).cookies,
+            // cookies: useCookies(["token", "id"]).cookies,
             socket: socket,
             status: {
                 0: { text: "Pending...", color: "red" },
@@ -134,12 +121,12 @@ export default {
             },
             showDeletePopup: false,
             selectedProject: "",
-            headers: ["Project name", "Task", "Parameters", "Results", "Operations", "Status"],
+            headers: ["Project name", "Mod", "Parameters", "Results", "Operations", "Status"],
             item: null,
         };
     },
     mounted() {
-        this.cookies = useCookies(["token", "id"]).cookies;
+        // this.cookies = useCookies(["token", "id"]).cookies;
         // console.log("Token: " + this.cookies.get("token"));
         // SOCKET IO
         // update project status

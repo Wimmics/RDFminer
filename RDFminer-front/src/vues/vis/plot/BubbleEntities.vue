@@ -39,41 +39,34 @@ export default {
             // CoreUI CCharts: Bubble chart
             // bubble_chart: {},
             // ELAPSED TIME / REFERENCE CARDINALITY (EXCEPTIONS ?)
-            entitiesAvalaible: false,
             data: [],
             options: bubbleOptions,
         };
     },
     mounted() {
-        console.log(this.results);
+        // console.log(this.results);
         this.getData();
         // SOCKET IO
-        this.socket.on("update-status", (data) => {
-            // 2 -> project finished !
-            if (data.status == 2) {
-                this.getData();
-            }
+        this.socket.on("update-status", () => {
+            this.getData();
         });
     },
     methods: {
         getData() {
-            if (toRaw(this.results.entities.length) != 0) {
-                // entities data
-                this.data.push(headers);
-                // iterate on entities found
-                for (let i = 0; i < toRaw(this.results.entities.length); i++) {
-                    // console.log(entity.numExceptions / entity.referenceCardinality)
-                    this.data.push([
-                        toRaw(this.results.entities[i].phenotype),
-                        toRaw(this.results.entities[i].numExceptions),
-                        toRaw(this.results.entities[i].elapsedTime),
-                        toRaw(this.results.entities[i].numExceptions) / toRaw(this.results.entities[i].referenceCardinality),
-                        toRaw(this.results.entities[i].referenceCardinality)
-                    ]);
-                }
-                this.entitiesAvalaible = true;
-                this.refresh = !this.refresh;
+            this.data.push(headers);
+            // entities data
+            // iterate on entities found
+            for (let i = 0; i < toRaw(this.results.entities.length); i++) {
+                // console.log(entity.numExceptions / entity.referenceCardinality)
+                this.data.push([
+                    toRaw(this.results.entities[i].phenotype),
+                    toRaw(this.results.entities[i].numExceptions),
+                    toRaw(this.results.entities[i].elapsedTime),
+                    toRaw(this.results.entities[i].numExceptions) / toRaw(this.results.entities[i].referenceCardinality),
+                    toRaw(this.results.entities[i].referenceCardinality)
+                ]);
             }
+            this.refresh = !this.refresh;
         }
     }
 }

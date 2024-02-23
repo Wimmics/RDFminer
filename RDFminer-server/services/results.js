@@ -12,8 +12,17 @@ function get(req, res) {
     if (decoded != null) {
         logger.info("GET /results - " + decoded.id + " - get()");
         // find results linked to the project
-        if (req.query.projectID != null) {
-            Project.findOne({ _id: req.query.projectID }).then((project) => {
+        if (req.query.resultsID != null) {
+            Result.findOne({ _id: req.query.resultsID }).then((result) => {
+                // return the result ID
+                if (result == null) {
+                    logger.error("GET /results - " + decoded.id + " - this result has not been found ...");
+                    return res.status(401).send("this result has not been found ...");
+                }
+                return res.status(200).send(result);
+            });
+        } else if (req.query.projectID != null) {
+            Project.findOne({ userID: decoded.id, projectName: req.query.projectName }).then((project) => {
                 if (project != null) {
                     Result.findOne({ _id: project.resultsID }).then((result) => {
                         // return the result ID
@@ -21,7 +30,7 @@ function get(req, res) {
                             logger.error("GET /results - " + decoded.id + " - this result has not been found ...");
                             return res.status(401).send("this result has not been found ...");
                         }
-                        return res.status(200).send(result._id);
+                        return res.status(200).send(result);
                     });
                 } else { 
                     logger.error("GET /results - " + decoded.id + " - this project has not been found ...")

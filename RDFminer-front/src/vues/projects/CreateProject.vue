@@ -37,12 +37,10 @@
                 <CRow class="mb-3">
                     <CFormLabel class="col-sm-2 col-form-label"><b>I would like to ...</b></CFormLabel>
                     <CCol sm="10">
-                        <CFormSelect v-model="selectedFeature" @change="selectedBNFTemplate = ''"
-                            feedback-invalid="Please, select a feature" :invalid="selectedFeature == ''">
+                        <CFormSelect v-model="selectedMod" @change="selectedGrammarTemplate = ''"
+                            feedback-invalid="Please, select a feature" :invalid="selectedMod == ''">
                             <option selected disabled>Select the required mode</option>
-                            <option v-for="feature in features" :key="feature" :value="feature.cmd">{{ feature.description
-                            }}
-                            </option>
+                            <option v-for="mod in modSamples" :key="mod" :value="mod.value">{{ mod.description }}</option>
                         </CFormSelect>
                     </CCol>
                 </CRow>
@@ -52,18 +50,16 @@
                 <CRow class="mb-3">
                     <CFormLabel class="col-sm-2 col-form-label"><b>{{ namedDataGraph.description }}</b></CFormLabel>
                     <CCol sm="3">
-                        <CFormSelect v-model="selectedNamedDataGraph" feedback-invalid="Please, select a SPARQL endpoint"
+                        <CFormSelect v-model="selectedNamedDataGraph" feedback-invalid="Please, select a RDF data graph to exploit"
                             :invalid="selectedNamedDataGraph == ''">
-                            <option selected disabled>Select the required endpoint</option>
-                            <option v-for="endpoint in endpoints" :key="endpoint" :value="endpoint.value">{{
-                                endpoint.description }}
-                            </option>
+                            <option selected disabled>Choose a RDF data graph</option>
+                            <option v-for="uri in uris" :key="uri" :value="uri.value">{{ uri.description }}</option>
                         </CFormSelect>
                     </CCol>
-                    <CCol sm="7">
-                        <CFormInput v-model="selectedNamedDataGraph" feedback-invalid="It must be a valid SPARQL endpoint"
+                    <!-- <CCol sm="7">
+                        <CFormInput v-model="selectedNamedDataGraph" feedback-invalid="It must be a valid URI"
                             :invalid="!selectedNamedDataGraph.includes('http://')" />
-                    </CCol>
+                    </CCol> -->
                 </CRow>
                 <!--
             Prefixes
@@ -72,12 +68,10 @@
                     <CFormLabel class="col-sm-2 col-form-label"><b>{{ prefixes.description }}</b></CFormLabel>
                     <CCol sm="3">
                         <!-- Template -->
-                        <CFormSelect v-model="selectedPrefixes" feedback-invalid="Please select a prefixes sample" required
+                        <CFormSelect v-model="selectedPrefixes" feedback-invalid="Please, select a prefixes sample" required
                             :invalid="selectedPrefixes == ''">
                             <option selected disabled>Select the required prefixes</option>
-                            <option v-for="sample in prefixesSamples" :key="sample" :value="sample.value">{{
-                                sample.description }}
-                            </option>
+                            <option v-for="sample in prefixesSamples" :key="sample" :value="sample.value">{{ sample.description }}</option>
                         </CFormSelect>
                         <!-- <br /> -->
                         <!-- <p>{{ selectedPrefixes }}</p> -->
@@ -95,23 +89,23 @@
             Depending on the mod, we load the right component 
             Just below: Grammatical Evolution Mod
         -->
-        <div v-if="selectedFeature.includes('ge')">
+        <div v-if="selectedMod == 1 || selectedMod == 3">
             <CCard>
                 <CCardTitle class="text-center">Grammatical Evolution</CCardTitle>
                 <CCardBody>
                     <!--
                 SHACL
             -->
-                    <div v-if="selectedFeature.includes('rs')">
+                    <div v-if="selectedMod == 3">
                         <CRow class="mb-3">
                             <CFormLabel class="col-sm-2 col-form-label"><b>Probabilistic SHACL</b></CFormLabel>
                             <CCol sm="2">
                                 <!-- Alpha -->
-                                <CFormLabel>{{ shaclAlpha.description }}</CFormLabel>
+                                <CFormLabel>{{ probShaclAlpha.description }}</CFormLabel>
                             </CCol>
                             <CCol sm="2">
-                                <!-- Alpha -->
-                                <CFormSelect v-model="selectedShaclAlpha" :disabled="selectedShaclProb == 0" required>
+                                <!-- P -->
+                                <CFormSelect v-model="selectedProbShaclAlpha" :disabled="selectedProbShaclP == 0" required>
                                     <option selected disabled>Select the required significance level</option>
                                     <option v-for="alpha in alphaValues" :key="alpha" :value="alpha.value">{{
                                         alpha.description
@@ -120,16 +114,16 @@
                             </CCol>
                             <CCol sm="1">
                                 <!-- p-value -->
-                                <CFormLabel>{{ shaclProb.description }}</CFormLabel>
+                                <CFormLabel>{{ probShaclP.description }}</CFormLabel>
                             </CCol>
                             <CCol sm="4">
-                                <CFormRange :min="0" :max="1" :step="0.05" v-model="selectedShaclProb" />
+                                <CFormRange :min="0" :max="1" :step="0.05" v-model="selectedProbShaclP" />
                             </CCol>
                             <CCol sm="1">
-                                <CFormLabel class="col-form-label"><b>{{ selectedShaclProb }}</b></CFormLabel>
+                                <CFormLabel class="col-form-label"><b>{{ selectedProbShaclP }}</b></CFormLabel>
                             </CCol>
                         </CRow>
-                        <CAlert color="warning" v-if="selectedShaclProb == 0">
+                        <CAlert color="warning" v-if="selectedProbShaclP == 0">
                             <b>Standard SHACL validation !</b> increase the <b>P-value</b> to enable the <b>probabilistic
                                 SHACL
                                 validation</b>
@@ -147,11 +141,11 @@
                         <CFormLabel class="col-sm-2 col-form-label"><b>{{ grammar.description }}</b></CFormLabel>
                         <CCol sm="3">
                             <!-- Template -->
-                            <CFormSelect aria-label="select-bnf-axioms" v-model="selectedBNFTemplate"
+                            <CFormSelect aria-label="select-grammar" v-model="selectedGrammarTemplate"
                                 feedback-invalid="Please select a BNF template (You can customize it !)" required
-                                :invalid="selectedBNFTemplate == ''">
+                                :invalid="selectedGrammarTemplate == ''">
                                 <option selected disabled>Select the required template</option>
-                                <option v-for="bnf in filteredTemplates" :key="bnf" :value="bnf.value">{{ bnf.description }}
+                                <option v-for="grammar in filteredTemplates" :key="grammar" :value="grammar.value">{{ grammar.description }}
                                 </option>
                             </CFormSelect>
                             <!-- <br /> -->
@@ -159,7 +153,7 @@
                         <CCol sm="7">
                             <!-- Content -->
                             <CFormTextarea style="color: rgb(1, 108, 157)">
-                                {{ selectedBNFTemplate }}
+                                {{ selectedGrammarTemplate }}
                             </CFormTextarea>
                         </CCol>
                         <!-- <p>filtered: {{ filteredTemplates.length }} / templates: {{ templates.length }}</p> -->
@@ -201,21 +195,6 @@
                         </CCol>
                     </CRow>
                     <!-- 
-                Total effort
-            -->
-                    <!-- <CRow class="mb-3">
-                        <CFormLabel class="col-sm-2 col-form-label"><b>{{ effort.description }}</b></CFormLabel>
-                        <CCol sm="9">
-                            <CFormRange :min="minEffort" :max="maxEffort" :step="10" v-model="selectedTotalEffort" />
-                        </CCol>
-                        <CCol sm="1">
-                            <CFormLabel class="col-form-label"><b>{{ selectedTotalEffort }}</b></CFormLabel>
-                        </CCol>
-                    </CRow>
-                    <CAlert color="success">
-                        You will perform <b>{{ numberOfGenerations }} generation(s) !</b>
-                    </CAlert> -->
-                    <!-- 
                 Elite Selection
             -->
                     <CRow class="mb-3">
@@ -236,9 +215,7 @@
                             <CFormSelect aria-label="select-selection" v-model="selectedSelection"
                                 feedback-invalid="Please, choose a selection operator" :invalid="selectedSelection == ''">
                                 <option selected disabled>Select the required selection</option>
-                                <option v-for="selection in selectionType" :key="selection" :value="selection.value">{{
-                                    selection.description
-                                }}</option>
+                                <option v-for="selection in selectionType" :key="selection" :value="selection.value">{{ selection.description }}</option>
                             </CFormSelect>
                         </CCol>
                         <CCol sm="6">
@@ -248,8 +225,8 @@
                             <CFormLabel class="col-form-label"><b>{{ selectionRate }}</b></CFormLabel>
                         </CCol>
                     </CRow>
-                    <!-- Tournament size (depending of the selection mod) -->
-                    <CRow class="mb-3" v-if="selectedSelection == '3'">
+                    <!-- Tournament size (depending of the selection type) -->
+                    <CRow class="mb-3" v-if="selectedSelection == 3">
                         <CFormLabel class="col-sm-2 col-form-label"><b>Tournament selection rate</b></CFormLabel>
                         <CCol sm="9">
                             <CFormRange :min="0.05" :max="1" :step="0.05" v-model="tournamentSelectionRate" />
@@ -259,7 +236,7 @@
                         </CCol>
                     </CRow>
                     <!-- 
-                Crossover: type of crossover and proportion 
+                Crossover: type of crossover and prob 
             -->
                     <CRow class="mb-3">
                         <CFormLabel class="col-sm-2 col-form-label"><b>{{ crossover.description }}</b></CFormLabel>
@@ -267,20 +244,18 @@
                             <CFormSelect aria-label="select-crossover" v-model="selectedCrossover"
                                 feedback-invalid="Please, choose a crossover operator" :invalid="selectedCrossover == ''">
                                 <option selected disabled>Select the required crossover</option>
-                                <option v-for="crossover in crossoverType" :key="crossover" :value="crossover.value">{{
-                                    crossover.description
-                                }}</option>
+                                <option v-for="crossover in crossoverType" :key="crossover" :value="crossover.value">{{ crossover.description }}</option>
                             </CFormSelect>
                         </CCol>
                         <CCol sm="6">
-                            <CFormRange :min="0" :max="1" :step="0.05" v-model="crossoverRate" />
+                            <CFormRange :min="0" :max="1" :step="0.05" v-model="proCrossover" />
                         </CCol>
                         <CCol sm="1">
-                            <CFormLabel class="col-form-label"><b>{{ crossoverRate }}</b></CFormLabel>
+                            <CFormLabel class="col-form-label"><b>{{ proCrossover }}</b></CFormLabel>
                         </CCol>
                     </CRow>
                     <!-- 
-                Mutation: type of mutation and proportion 
+                Mutation: type of mutation and prob
             -->
                     <CRow class="mb-3">
                         <CFormLabel class="col-sm-2 col-form-label"><b>{{ mutation.description }}</b></CFormLabel>
@@ -288,29 +263,14 @@
                             <CFormSelect aria-label="select-mutation" v-model="selectedMutation"
                                 feedback-invalid="Please, choose a mutation operator" :invalid="selectedMutation == ''">
                                 <option selected disabled>Select the required mutation</option>
-                                <option v-for="mutation in mutationType" :key="mutation" :value="mutation.value">{{
-                                    mutation.description
-                                }}</option>
+                                <option v-for="mutation in mutationType" :key="mutation" :value="mutation.value">{{ mutation.description }}</option>
                             </CFormSelect>
                         </CCol>
                         <CCol sm="6">
-                            <CFormRange :min="0" :max="1" :step="0.01" v-model="mutationRate" />
+                            <CFormRange :min="0" :max="1" :step="0.01" v-model="proMutation" />
                         </CCol>
                         <CCol sm="1">
-                            <CFormLabel class="col-form-label"><b>{{ mutationRate }}</b></CFormLabel>
-                        </CCol>
-                    </CRow>
-                    <!-- 
-                Crowding Method - Novelty Search
-            -->
-                    <CRow class="mb-3">
-                        <CFormLabel class="col-sm-2 col-form-label"><b>Some Optimizers</b></CFormLabel>
-                        <!-- <CCol sm="5">
-                            <CFormSwitch :label="crowding.description" v-model="enableCrowding" />
-                        </CCol> -->
-                        <CCol sm="10">
-                            <CFormSwitch :label="noveltySearch.description" v-model="enableNoveltySearch"
-                                :disabled="!selectedFeature.includes('ra')" />
+                            <CFormLabel class="col-form-label"><b>{{ proMutation }}</b></CFormLabel>
                         </CCol>
                     </CRow>
                     <!--
@@ -324,29 +284,27 @@
                                 feedback-invalid="Please select a stop criterion" required
                                 :invalid="selectedStopCriterion == ''">
                                 <option selected disabled>Select the required stop criterion</option>
-                                <option v-for="criterion in stopCriterionType" :key="criterion" :value="criterion.value">{{
-                                    criterion.description }}
-                                </option>
+                                <option v-for="criterion in stopCriterionType" :key="criterion" :value="criterion.value">{{ criterion.description }}</option>
                             </CFormSelect>
                             <!-- <br /> -->
                         </CCol>
-                        <CCol sm="1" v-if="selectedStopCriterion == '2'">
+                        <CCol sm="1" v-if="selectedStopCriterion == 2">
                             <CFormLabel>{{ effort.description }}</CFormLabel>
                         </CCol>
-                        <CCol sm="1" v-if="selectedStopCriterion == '1'">
-                            <CFormLabel>{{ time.description }}</CFormLabel>
+                        <CCol sm="1" v-if="selectedStopCriterion == 1">
+                            <CFormLabel>{{ maxMiningTime.description }}</CFormLabel>
                         </CCol>
-                        <CCol sm="5" v-if="selectedStopCriterion == '2'">
-                            <CFormRange :min="minEffort" :max="maxEffort" :step="10" v-model="selectedTotalEffort" />
+                        <CCol sm="5" v-if="selectedStopCriterion == 2">
+                            <CFormRange :min="minEffort" :max="maxEffort" :step="10" v-model="selectedEffort" />
                         </CCol>
-                        <CCol sm="5" v-if="selectedStopCriterion == '1'">
-                            <CFormRange :min=10 :max=180 :step="5" v-model="selectedTime" />
+                        <CCol sm="5" v-if="selectedStopCriterion == 1">
+                            <CFormRange :min=10 :max=180 :step="5" v-model="selectedMaxMiningTime" />
                         </CCol>
-                        <CCol sm="1" v-if="selectedStopCriterion == '2'">
-                            <CFormLabel class="col-form-label"><b>{{ selectedTotalEffort }}</b></CFormLabel>
+                        <CCol sm="1" v-if="selectedStopCriterion == 2">
+                            <CFormLabel class="col-form-label"><b>{{ selectedEffort }}</b></CFormLabel>
                         </CCol>
-                        <CCol sm="1" v-if="selectedStopCriterion == '1'">
-                            <CFormLabel class="col-form-label"><b>{{ selectedTime }}</b></CFormLabel>
+                        <CCol sm="1" v-if="selectedStopCriterion == 1">
+                            <CFormLabel class="col-form-label"><b>{{ selectedMaxMiningTime }}</b></CFormLabel>
                         </CCol>
                     </CRow>
 
@@ -354,14 +312,14 @@
             </CCard>
         </div>
 
-        <div v-if="selectedFeature.includes('sf') || selectedFeature.includes('af')">
+        <div v-if="selectedMod.includes('sf') || selectedMod.includes('af')">
             <CCard>
                 <CCardTitle class="text-center">Entities assessment</CCardTitle>
                 <CCardBody>
                     <!-- 
                 Evaluator Mod 
             -->
-                    <div v-if="selectedFeature.includes('sf')">
+                    <div v-if="selectedMod.includes('sf')">
 
                         <!-- 
                     Probabilistic SHACL
@@ -370,11 +328,11 @@
                             <CFormLabel class="col-sm-2 col-form-label"><b>Probabilistic SHACL</b></CFormLabel>
                             <CCol sm="2">
                                 <!-- Alpha -->
-                                <CFormLabel>{{ shaclAlpha.description }}</CFormLabel>
+                                <CFormLabel>{{ probShaclAlpha.description }}</CFormLabel>
                             </CCol>
                             <CCol sm="2">
                                 <!-- Alpha -->
-                                <CFormSelect v-model="selectedShaclAlpha" required :disabled="selectedShaclProb == 0">
+                                <CFormSelect v-model="selectedProbShaclAlpha" required :disabled="selectedProbShaclP == 0">
                                     <option selected disabled>Select the required significance level</option>
                                     <option v-for="alpha in alphaValues" :key="alpha" :value="alpha.value">{{
                                         alpha.description
@@ -383,16 +341,16 @@
                             </CCol>
                             <CCol sm="1">
                                 <!-- p-value -->
-                                <CFormLabel>{{ shaclProb.description }}</CFormLabel>
+                                <CFormLabel>{{ probShaclP.description }}</CFormLabel>
                             </CCol>
                             <CCol sm="4">
-                                <CFormRange :min="0" :max="1" :step="0.05" v-model="selectedShaclProb" />
+                                <CFormRange :min="0" :max="1" :step="0.05" v-model="selectedProbShaclP" />
                             </CCol>
                             <CCol sm="1">
-                                <CFormLabel class="col-form-label"><b>{{ selectedShaclProb }}</b></CFormLabel>
+                                <CFormLabel class="col-form-label"><b>{{ selectedProbShaclP }}</b></CFormLabel>
                             </CCol>
                         </CRow>
-                        <CAlert color="warning" v-if="selectedShaclProb == 0">
+                        <CAlert color="warning" v-if="selectedProbShaclP == 0">
                             <b>Standard SHACL validation !</b> increase the <b>P-value</b> to enable the <b>probabilistic
                                 SHACL
                                 validation</b>
@@ -416,7 +374,7 @@
                             </CCol>
                         </CRow>
                     </div>
-                    <div v-if="selectedFeature.includes('af')">
+                    <div v-if="selectedMod.includes('af')">
                         <!-- 
                     OWL axioms file 
                 -->
@@ -445,7 +403,7 @@
 <script>
 import {
     CCard, CCardBody, CCardTitle, CForm, CRow, CFormLabel, CCol,
-    CFormInput, CFormSelect, CFormTextarea, CFormRange, CAlert, CFormSwitch, CButton
+    CFormInput, CFormSelect, CFormTextarea, CFormRange, CAlert, CButton
 } from '@coreui/vue'
 import { get, post } from "@/tools/api";
 
@@ -458,7 +416,7 @@ export default {
     },
     components: {
         CCard, CCardBody, CCardTitle, CForm, CRow, CFormLabel, CCol,
-        CFormInput, CFormSelect, CFormTextarea, CFormRange, CAlert, CFormSwitch, CButton
+        CFormInput, CFormSelect, CFormTextarea, CFormRange, CAlert, CButton
     },
     data() {
         return {
@@ -470,40 +428,41 @@ export default {
             selectedProjectName: "",
             alreadyExist: true,
             errorMessage: "Please, choose a name for your project",
-            // features
-            features: [],
-            selectedFeature: "",
-            task: "",
+            // mods
+            mods: {},
+            modSamples: [],
+            selectedMod: "",
+            // Named RDF data graph
+            namedDataGraph: {},
+            uris: [],
+            selectedNamedDataGraph: "",
             // prefixes
             prefixes: {},
             prefixesSamples: [],
             selectedPrefixes: "",
-            // SPARQL endpoint
-            namedDataGraph: {},
-            endpoints: [],
-            selectedNamedDataGraph: "",
+            
             // shacl - axioms content
             axiomsFile: {},
             axioms: "",
             shapesFile: {},
             shapes: "",
             // BNF Grammar templates
-            grammar: {},
+            BNFgrammar: {},
             templates: [],
             filteredTemplates: [],
-            selectedBNFTemplate: "",
+            selectedGrammarTemplate: "",
             // stop criterion
             stopCriterion: {},
             stopCriterionType: [],
             selectedStopCriterion: "",
             // clock-world time
-            time: {},
-            selectedTime: -1,
+            maxMiningTime: {},
+            selectedMaxMiningTime: -1,
             // total effort 
             effort: {},
             minEffort: 0,
             maxEffort: 0,
-            selectedTotalEffort: -1,
+            selectedEffort: -1,
             // pop size
             populationSize: {},
             selectedPopulationSize: 0,
@@ -520,12 +479,12 @@ export default {
             crossover: {},
             crossoverType: [],
             selectedCrossover: 0,
-            crossoverRate: -1,
+            proCrossover: -1,
             // Mutation
             mutation: {},
             mutationType: [],
             selectedMutation: 0,
-            mutationRate: -1,
+            proMutation: -1,
             // chromosomes size
             sizeChromosome: {},
             selectedSizeChromosome: -1,
@@ -539,21 +498,21 @@ export default {
             noveltySearch: {},
             enableNoveltySearch: false,
             // shacl: p-value et alpha
-            shaclAlpha: {},
+            probShaclAlpha: {},
             alphaValues: [],
-            selectedShaclAlpha: -1,
-            shaclProb: {},
-            selectedShaclProb: -1
+            selectedProbShaclAlpha: -1,
+            probShaclP: {},
+            selectedProbShaclP: -1
         }
     },
     methods: {
         updateNumberGenerations() {
-            this.numberOfGenerations = Math.ceil(this.selectedTotalEffort / this.selectedPopulationSize);
+            this.numberOfGenerations = Math.ceil(this.selectedEffort / this.selectedPopulationSize);
         },
         updateEffort() {
             this.minEffort = this.selectedPopulationSize;
             this.maxEffort = this.selectedPopulationSize * 200;
-            this.selectedTotalEffort = this.maxEffort;
+            this.selectedEffort = this.maxEffort;
             this.updateNumberGenerations();
         },
         getDefaultValue(data) {
@@ -563,7 +522,7 @@ export default {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = e => {
-                if (this.selectedFeature.includes('sf')) {
+                if (this.selectedMod.includes('sf')) {
                     this.shapes = e.target.result;
                 } else {
                     this.axioms = e.target.result;
@@ -574,15 +533,14 @@ export default {
         getForm() {
             return {
                 projectName: this.selectedProjectName,
-                mod: this.selectedFeature,
+                mod: this.selectedMod,
                 prefixes: this.selectedPrefixes,
                 namedDataGraph: this.selectedNamedDataGraph,
-                task: this.task,
-                bnf: this.selectedBNFTemplate,
+                grammar: this.selectedGrammarTemplate,
                 populationSize: this.selectedPopulationSize,
-                effort: this.selectedTotalEffort,
+                effort: this.selectedEffort,
                 stopCriterionType: this.selectedStopCriterion,
-                time: this.selectedTime,
+                maxMiningTime: this.selectedMaxMiningTime,
                 sizeChromosome: this.selectedSizeChromosome,
                 maxWrap: this.selectedMaxWrap,
                 eliteSelectionRate: this.eliteSelectionRate,
@@ -590,19 +548,19 @@ export default {
                 selectionType: this.selectedSelection,
                 selectionRate: this.selectionRate,
                 mutationType: this.selectedMutation,
-                mutationRate: this.mutationRate,
+                proMutation: this.proMutation,
                 crossoverType: this.selectedCrossover,
-                crossoverRate: this.crossoverRate,
+                proCrossover: this.proCrossover,
                 // noveltySearch: this.enableNoveltySearch,
-                shaclAlpha: this.selectedShaclAlpha,
-                shaclProb: this.selectedShaclProb,
+                probShaclAlpha: this.selectedProbShaclAlpha,
+                probShaclP: this.selectedProbShaclP,
                 axioms: this.axioms,
                 shapes: this.shapes
             }
         },
         async postProject() {
             // set task field
-            this.task = this.selectedFeature.includes('ge') ? "Mining" : "Assessment";
+            this.task = this.selectedMod.includes('ge') ? "Mining" : "Assessment";
             const data = await post("api/project", {}, this.getForm());
             // if it has been pushed into the cluster
             if (data) {
@@ -615,59 +573,55 @@ export default {
         async setupParams() {
             const params = (await get("api/params", {}))[0];
             this.directory = params.projectName;
-            // features
-            this.features.push(params.axiomsMining, params.axiomsAssessment, params.shapesMining, params.shapesAssessment);
+            // mods
+            this.mods = params.mod;
+            this.modSamples = params.mod.values;
             // prefixes
             this.prefixes = params.prefixes;
             this.prefixesSamples = params.prefixes.values;
             // this.selectedPrefixes = this.getDefaultValue(data.prefixes);
             // SPARQL endpoint
             this.namedDataGraph = params.namedDataGraph;
-            this.endpoints = params.namedDataGraph.values;
+            this.uris = params.namedDataGraph.values;
             // BNF grammar
-            this.grammar = params.grammar;
+            this.BNFgrammar = params.grammar;
             this.templates = params.grammar.values;
             // stop criterion
             this.stopCriterion = params.stopCriterionType;
             this.stopCriterionType = params.stopCriterionType.values;
             // clock-world time 
-            this.time = params.time;
-            this.selectedTime = this.getDefaultValue(params.time);
+            this.maxMiningTime = params.maxMiningTime;
+            this.selectedMaxMiningTime = this.getDefaultValue(params.maxMiningTime);
             // max effort
             this.effort = params.effort;
-            this.selectedTotalEffort = this.getDefaultValue(params.effort);
+            this.selectedEffort = this.getDefaultValue(params.effort);
             // population size 
             this.populationSize = params.populationSize;
             this.selectedPopulationSize = this.getDefaultValue(params.populationSize);
             // selection
-            this.selection = params.selection;
-            this.selectionType = params.selection.values;
-            this.selectionRate = this.getDefaultValue(params.pSelection);
+            this.selection = params.selectionType;
+            this.selectionType = params.selectionType.values;
+            this.selectionRate = this.getDefaultValue(params.selectionRate);
             // crossover
-            this.crossover = params.crossover;
-            this.crossoverType = params.crossover.values;
-            this.crossoverRate = this.getDefaultValue(params.pCrossover);
+            this.crossover = params.crossoverType;
+            this.crossoverType = params.crossoverType.values;
+            this.proCrossover = this.getDefaultValue(params.proCrossover);
             // mutation
-            this.mutation = params.mutation;
-            this.mutationType = params.mutation.values;
-            this.mutationRate = this.getDefaultValue(params.pMutation);
+            this.mutation = params.mutationType;
+            this.mutationType = params.mutationType.values;
+            this.proMutation = this.getDefaultValue(params.proMutation);
             // chromosome size
             this.sizeChromosome = params.sizeChromosome;
             this.selectedSizeChromosome = this.getDefaultValue(params.sizeChromosome);
             // max wrapp
             this.maxWrap = params.maxWrap;
             this.selectedMaxWrap = this.getDefaultValue(params.maxWrap);
-            // optimizers
-            // this.crowding = params.crowding;
-            // this.enableCrowding = this.getDefaultValue(params.crowding);
-            this.noveltySearch = params.noveltySearch;
-            this.enableNoveltySearch = this.getDefaultValue(params.noveltySearch);
             // SHACL: alpha and prob
-            this.shaclAlpha = params.shaclAlpha;
-            this.alphaValues = params.shaclAlpha.values;
-            this.selectedShaclAlpha = this.getDefaultValue(params.shaclAlpha);
-            this.shaclProb = params.shaclProb;
-            this.selectedShaclProb = this.getDefaultValue(params.shaclProb);
+            this.probShaclAlpha = params.probShaclAlpha;
+            this.alphaValues = params.probShaclAlpha.values;
+            this.selectedProbShaclAlpha = this.getDefaultValue(params.probShaclAlpha);
+            this.probShaclP = params.probShaclP;
+            this.selectedProbShaclP = this.getDefaultValue(params.probShaclP);
             // assessment 
             this.axiomsFile = params.axiomsAssessment;
             this.shapesFile = params.shapesAssessment;
@@ -676,15 +630,14 @@ export default {
     watch: {
         async projectToLoad() {
             const project = (await this.getProject(this.projectToLoad))[0];
-            this.selectedFeature = project.mod;
+            this.selectedMod = project.mod;
             this.selectedPrefixes = project.prefixes;
             this.selectedNamedDataGraph = project.namedDataGraph;
-            this.task = project.task;
-            this.selectedBNFTemplate = project.bnf;
+            this.selectedGrammarTemplate = project.grammar;
             this.selectedPopulationSize = project.populationSize;
-            this.selectedTotalEffort = project.effort;
+            this.selectedEffort = project.effort;
             this.selectedStopCriterion = project.stopCriterionType;
-            this.selectedTime = project.time;
+            this.selectedMaxMiningTime = project.maxMiningTime;
             this.selectedSizeChromosome = project.sizeChromosome;
             this.selectedMaxWrap = project.maxWrap;
             this.eliteSelectionRate = project.eliteSelectionRate;
@@ -692,30 +645,30 @@ export default {
             this.selectedSelection = project.selectionType;
             this.selectionRate = project.selectionRate;
             this.selectedMutation = project.mutationType;
-            this.mutationRate = project.mutationRate;
+            this.proMutation = project.proMutation;
             this.selectedCrossover = project.crossoverType;
-            this.crossoverRate = project.crossoverRate;
+            this.proCrossover = project.proCrossover;
             this.enableNoveltySearch = project.noveltySearch;
-            this.selectedShaclAlpha = project.shaclAlpha;
-            this.selectedShaclProb = project.shaclProb;
+            this.selectedProbShaclAlpha = project.probShaclAlpha;
+            this.selectedProbShaclP = project.probShaclP;
             this.axioms = project.axioms;
             this.shapes = project.shapes;
         },
-        selectedFeature() {
-            if (this.selectedFeature.includes("-rs")) {
+        selectedMod() {
+            if (this.selectedMod == 3) {
                 // filtering BNF templates with grammars related to SHACL shapes
-                this.filteredTemplates = this.templates.filter((bnf) => {
-                    return bnf.description.includes("SHACL") == true;
+                this.filteredTemplates = this.templates.filter((grammar) => {
+                    return grammar.description.includes("SHACL") == true;
                 });
-            } else if (this.selectedFeature.includes("-ra")) {
+            } else if (this.selectedMod == 1) {
                 // filtering BNF templates with grammars related to SHACL shapes
-                this.filteredTemplates = this.templates.filter((bnf) => {
-                    return bnf.description.includes("OWL") == true;
+                this.filteredTemplates = this.templates.filter((grammar) => {
+                    return grammar.description.includes("OWL") == true;
                 });
             }
         },
-        selectedTotalEffort() {
-            // console.log(this.selectedTotalEffort)
+        selectedEffort() {
+            // console.log(this.selectedEffort)
             this.updateNumberGenerations();
         },
         selectedPopulationSize() {
