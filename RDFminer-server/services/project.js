@@ -78,19 +78,20 @@ function deleteProject(req, res) {
     const decoded = auth.verify(req, res);
     if (decoded != null) {
         logger.info("DELETE /project - " + decoded.id + " - delete()");
-        Project.deleteOne({ userID: decoded.id, projectName: req.query.projectName }).then((data) => {
+        Project.deleteOne({ userID: decoded.id, projectName: req.query.projectName }).then((project) => {
             logger.info("DELETE /project - " + decoded.id + " - delete results related to this project (if exists)...");
-            Result.deleteOne({ userId: decoded.id, projectName: req.query.projectName }).then((data) => {
+            Result.deleteOne({ _id: project.resultsID }).then((data) => {
                 if (data) {
                     logger.info("DELETE /project - " + decoded.id + " - results (" + data._id + ") deleted !");
-                } else {
-                    logger.error("DELETE /project - " + decoded.id + " - results cannot be deleted ...");
                 }
+            }).catch((error) => {
+                logger.error("DELETE /project - " + decoded.id + " - results cannot be deleted: " + error);
+                return res.status(401).send(error);
             });
-            socket.io.emit("deleteProject", data);
+            socket.io.emit("deleteProject", project);
             // console.log("/project/delete: " + data);
-            logger.info("DELETE /project - " + decoded.id + " - project (" + data._id + ") deleted !");
-            return res.status(200).send(data);
+            logger.info("DELETE /project - " + decoded.id + " - project (" + project._id + ") deleted !");
+            return res.status(200).send(project);
         }).catch((error) => {
             logger.error("DELETE /project - " + decoded.id + " - project cannot be deleted: " + error);
             return res.status(401).send(error);
@@ -115,7 +116,7 @@ function getProjectByNameAndUser(req, res) {
     const decoded = auth.verify(req, res);
     if (decoded != null) {
         logger.info("GET /project - " + decoded.id + " - getProjectByNameAndUser()");
-        Project.find({ userId: decoded.id, projectName: req.query.projectName }).then((project) => {
+        Project.find({ userID: decoded.id, projectName: req.query.projectName }).then((project) => {
             res.status(200).send(project);
             // console.log(project);
         }).catch((error) => {
