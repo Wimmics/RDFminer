@@ -71,12 +71,13 @@ export default {
     mounted() {
         // Items
         // console.log("entities: " + JSON.stringify(this.results.entities));
-        this.results.entities.forEach((entity) => {
-            if (this.phenotypes.indexOf(entity.phenotype) != -1) {
-                console.log("~doublon: " + entity.phenotype)
-            }
-            this.entities.push(entity);
-        });
+        // this.results.entities.forEach((entity) => {
+        //     if (this.phenotypes.indexOf(entity.phenotype) != -1) {
+        //         console.log("~doublon: " + entity.phenotype)
+        //     }
+        //     this.entities.push(entity);
+        // });
+        this.entities = this.results.entities;
         // Header
         this.headers = ["SHACL Shape (" + this.entities.length + ")", "Reference Cardinality", "#Exceptions", "#Confirmations", "Likelihood", "Fitness Score", "Acceptance", "Elite"];
     }

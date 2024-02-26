@@ -20,7 +20,7 @@ async function exec(job) {
                 { userID: job.data.userID, projectName: job.data.projectName },
                 { status: Status.IN_PROGRESS }
             ).then(() => {
-                socket.io.emit("update-status", { projectName: job.data.projectName, status: Status.IN_PROGRESS });
+                socket.io.emit("update-status", { id: job.data._id, status: Status.IN_PROGRESS });
                 // POST request of RDFminer-core 
                 // /core/start 
                 // body (url encoded):   "params": Object (:= project)
@@ -46,6 +46,7 @@ async function exec(job) {
                             { userID: job.data.userID, projectName: job.data.projectName },
                             { status: Status.FINISH }
                         ).then(() => {
+                            socket.io.emit("update-status", { id: job.data._id, status: Status.FINISH });
                             // success !
                             resolve("completed");
                         }).catch((error) => {

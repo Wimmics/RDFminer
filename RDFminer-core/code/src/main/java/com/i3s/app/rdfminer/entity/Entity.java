@@ -226,7 +226,7 @@ public class Entity {
         json.put("elapsedTime", this.elapsedTime);
 //        if (RDFMiner.parameters.useClassicShaclMode) {
 //            json.put("likelihood", this.likelihood.doubleValue());
-        if (parameters.getMod() == Mod.SHAPE_ASSESSMENT) {
+        if (parameters.getMod() == Mod.SHAPE_ASSESSMENT || parameters.getMod() == Mod.SHAPE_MINING) {
             json.put("generality", this.generality);
             json.put("likelihood", this.likelihood.doubleValue());
             json.put("pValue", this.pValue.doubleValue());

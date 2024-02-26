@@ -48,7 +48,7 @@ function update(req, res) {
     logger.info("PUT /results - " + req.body._id + " - update()");
     // update this results 
     Result.findOneAndUpdate({ _id: req.body._id }, req.body, { new: true }).then((result) => {
-        socket.io.emit("update-results");
+        socket.io.emit("update-results", result._id);
         return res.status(200).send(result);
     }).catch((error) => {
         logger.error("PUT /results - " + req.query._id + " - " + error);

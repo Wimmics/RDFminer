@@ -90,10 +90,10 @@ export default {
             project.status = status;
         },
         async redirectVisu(p) {
-            const id = await get("api/results", { projectName: p.projectName });
-            if (id) {
+            const result = await get("api/results", { resultsID: p.resultsID });
+            if (result) {
                 // redirect on visualisation route with the results ID linked to the project
-                this.$router.push({ name: "VueVisualisation", params: { resultsID: id, task: p.task } });
+                this.$router.push({ name: "VueVisualisation", params: { resultsID: result._id } });
             }
         },
         getColor(status) {
@@ -130,17 +130,13 @@ export default {
         // console.log("Token: " + this.cookies.get("token"));
         // SOCKET IO
         // update project status
-        this.socket.on("update-status", (data) => {
-            // console.log(data);
+        this.socket.on("update-status", (project) => {
+            console.log("socket.io: " + project.id + " - status: " + project.status);
             this.projects.forEach((p) => {
-                if (p.projectName == data.projectName) {
-                    this.updateStatus(p, data.status);
+                if (p._id == project.id) {
+                    this.updateStatus(p, project.status);
                 }
             });
-        });
-        // update resultId
-        this.socket.on("results-created", () => {
-            // console.log("results created !");
         });
     }
 }
