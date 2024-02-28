@@ -88,7 +88,7 @@ function deleteProject(req, res) {
                 logger.error("DELETE /project - " + decoded.id + " - results cannot be deleted: " + error);
                 return res.status(401).send(error);
             });
-            socket.io.emit("deleteProject", project);
+            // socket.io.emit("deleteProject", project);
             // console.log("/project/delete: " + data);
             logger.info("DELETE /project - " + decoded.id + " - project (" + project._id + ") deleted !");
             return res.status(200).send(project);

@@ -22,7 +22,11 @@ function login(req, res) {
                 expiresIn: 86400 // == 24 hours
             });
             logger.info("GET /login - OK - " + token);
-            res.status(200).send({ auth: true, token: token, userID: `${user._id}`});
+            let u = {};
+            u.username = user.username;
+            u.id = user._id;
+            u.token = token;
+            res.status(200).send(u);
         } else {
             logger.error("GET /login - the password is not correct ...");
             return res.status(200).send({auth: false, token: null});
