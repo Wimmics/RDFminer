@@ -72,6 +72,7 @@ export default {
               this.$cookies.set("token", user.token);
               this.$cookies.set("username", user.username);
               this.$store.commit("login", user);
+              this.errorMessage = "";
               // update isConnected status
               this.isConnected = true;
           } else {

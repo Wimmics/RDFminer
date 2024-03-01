@@ -6,8 +6,11 @@
     <CDropdownMenu class="pt-0">
       <CDropdownItem> {{ $store.state.userName }} </CDropdownItem>
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">Account</CDropdownHeader>
-      <CDropdownItem v-if="!$store.state.isAuth" @click="$store.commit('toggleLoginPopupVisible')"> <CIcon icon="cil-lock-unlocked"/> Login   </CDropdownItem>
-      <CDropdownItem v-if="$store.state.isAuth"  @click="logout()">                  <CIcon icon="cil-lock-locked"/>   Logout  </CDropdownItem>
+      <div v-if="!$store.state.isAuth">
+        <CDropdownItem  @click="$store.commit('toggleLoginPopupVisible')"> <CIcon icon="cil-lock-unlocked"/> Login   </CDropdownItem>
+        <CDropdownItem  @click="$store.commit('toggleRegisterPopupVisible')"> <CIcon icon="cil-laptop"/>     Register   </CDropdownItem>
+      </div>
+      <CDropdownItem v-if="$store.state.isAuth"  @click="logout()">        <CIcon icon="cil-lock-locked"/>   Logout  </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
 </template>

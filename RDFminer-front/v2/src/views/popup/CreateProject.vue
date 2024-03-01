@@ -208,7 +208,7 @@
                                     <CFormRange :min="0.05" :max="1" :step="0.05" v-model="selectedSelectionRate" />
                                 </CCol>
                                 <CCol sm="1">
-                                    <CFormLabel class="col-form-label"><b>{{ selectionRate }}</b></CFormLabel>
+                                    <CFormLabel class="col-form-label"><b>{{ selectedSelectionRate }}</b></CFormLabel>
                                 </CCol>
                             </CRow>
                             <!-- Tournament size (depending of the selection type) -->

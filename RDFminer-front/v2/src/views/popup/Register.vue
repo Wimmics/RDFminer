@@ -1,57 +1,86 @@
 <template>
-  <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
-    <CContainer>
-      <CRow class="justify-content-center">
-        <CCol :md="9" :lg="7" :xl="6">
-          <CCard class="mx-4">
-            <CCardBody class="p-4">
-              <CForm>
-                <h1>Register</h1>
-                <p class="text-medium-emphasis">Create your account</p>
-                <CInputGroup class="mb-3">
-                  <CInputGroupText>
-                    <CIcon icon="cil-user" />
-                  </CInputGroupText>
-                  <CFormInput placeholder="Username" autocomplete="username" />
-                </CInputGroup>
-                <CInputGroup class="mb-3">
-                  <CInputGroupText>@</CInputGroupText>
-                  <CFormInput placeholder="Email" autocomplete="email" />
-                </CInputGroup>
-                <CInputGroup class="mb-3">
-                  <CInputGroupText>
-                    <CIcon icon="cil-lock-locked" />
-                  </CInputGroupText>
-                  <CFormInput
-                    type="password"
-                    placeholder="Password"
-                    autocomplete="new-password"
-                  />
-                </CInputGroup>
-                <CInputGroup class="mb-4">
-                  <CInputGroupText>
-                    <CIcon icon="cil-lock-locked" />
-                  </CInputGroupText>
-                  <CFormInput
-                    type="password"
-                    placeholder="Repeat password"
-                    autocomplete="new-password"
-                  />
-                </CInputGroup>
-                <div class="d-grid">
-                  <CButton color="success">Create Account</CButton>
-                </div>
-              </CForm>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-    </CContainer>
-  </div>
+  <CModal :visible="$store.state.registerPopupVisible" @close="$store.commit('toggleRegisterPopupVisible')" alignment="center" scrollable>
+      <CModalHeader>
+          <CModalTitle>Register</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+          <CForm class="row gx-3 gy-2 align-items-center">
+              <!-- USERNAME -->
+              <CRow class="mb-3">
+                  <CFormInput type="email" class="form-control form-control" id="colFormLabelLg"
+                      placeholder="Example: MyUserId; jean_didier; USER-1234; ..." label="Username" v-model="username"
+                      :valid="isValidUsername" />
+
+              </CRow>
+              <CRow class="mb-3">
+                  <CFormInput type="email" class="form-control form-control" id="colFormLabelLg"
+                      placeholder="Put here the same username" label="Confirm your username" v-model="confUsername"
+                      :valid="isValidUsername && confUsername == username && confUsername != ''" />
+              </CRow>
+              <!-- PASSWORD -->
+              <CRow class="mb-3">
+                  <CFormInput type="password" class="form-control form-control" id="colFormLabelLg"
+                      placeholder="Example: MyVeryStrongPWD1234" label="Password" v-model="password"
+                      :valid="isValidUsername && password != ''" />
+              </CRow>
+              <CRow class="mb-3">
+                  <CFormInput type="password" class="form-control form-control" id="colFormLabelLg"
+                      placeholder="Put here the same password" label="Confirm your password" v-model="confPassword"
+                      :valid="isValidUsername && confPassword == password && confPassword != ''" />
+              </CRow>
+          </CForm>
+      </CModalBody>
+      <CModalFooter>
+          <CButton color="success"
+              :disabled="!isValidUsername || username == '' || password == '' || confUsername == '' || confPassword == ''"
+              @click="submit(username, password)">Submit</CButton>
+          <CButton color="danger" @click="$store.commit('toggleRegisterPopupVisible')">Close</CButton>
+      </CModalFooter>
+  </CModal>
 </template>
 
 <script>
+// import LoginForm from '@/vues/auth/LoginForm.vue';
+// https://coreui.io/vue/docs/components/modal.html
+import { get, post } from "@/tools/api";
+import { CButton, CForm, CFormInput, CRow, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter } from "@coreui/vue";
+
 export default {
   name: 'Register',
+  components: {
+      CButton, CFormInput, CRow, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter, CForm
+  },
+  data() {
+      return {
+          username: "",
+          confUsername: "",
+          password: "",
+          confPassword: "",
+          isValidUsername: false,
+      };
+  },
+  methods: {
+      async submit(username, password) {
+          const user = await post("api/register", {}, {
+              username: username,
+              password: password
+          });
+          if (user) {
+              this.$store.commit('toggleRegisterPopupVisible');
+              alert("Your account has been created ! Welcome " + user.username + " !");
+          }
+      }
+  },
+  watch: {
+      async username() {
+          if (this.username != '') {
+              // We'll check if this username does not already exist in our DB
+              const isExists = await get("api/user", { username: this.username });
+              this.isValidUsername = !isExists;
+          }
+      }
+  }
 }
 </script>
+
+<style scoped></style>

@@ -3,24 +3,47 @@
         You must select a specific project to analyse its results
     </div>
     <div v-else>
-        <h5>Entities</h5>
-        <Entities></Entities>
+        <CAccordion :active-item-key="1" always-open>
+            <CAccordionItem :item-key="1">
+                <CAccordionHeader>Progression</CAccordionHeader>
+                <CAccordionBody>
+                    <Progression></Progression>
+                </CAccordionBody>
+            </CAccordionItem>
+            <CAccordionItem :item-key="2">
+                <CAccordionHeader>Entities</CAccordionHeader>
+                <CAccordionBody>
+                    <Entities></Entities>
+                </CAccordionBody>
+            </CAccordionItem>
+            <CAccordionItem :item-key="3">
+                <CAccordionHeader>Visualisations</CAccordionHeader>
+                <CAccordionBody>
+                    <Charts></Charts>
+                </CAccordionBody>
+            </CAccordionItem>
+        </CAccordion>
         <br />
-        <h5>Visualisations</h5>
-        <Charts></Charts>
-        <br />
-        <CButton color="success" @click="$store.commit('downloadResults')">download the results file</CButton>
+        <CRow class="mb-3">
+            <CCol sm="2">
+                <CButton color="success" @click="$store.commit('downloadResults')">download full results</CButton>
+            </CCol>
+            <CCol sm="2">
+                <CButton color="success" @click="$store.commit('downloadShapes')">download shapes file</CButton>
+            </CCol>
+        </CRow>
     </div>
 </template>
 
 <script>
-import Entities from './Entities.vue';
-import Charts from './Charts.vue';
+import Entities from './components/Entities.vue';
+import Charts from './components/Charts.vue';
+import Progression from './components/Progression.vue';
 
 export default {
     name: 'Results',
     components: {
-        Entities, Charts
+        Entities, Charts, Progression
     },
 }
 </script>

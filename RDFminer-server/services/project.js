@@ -86,15 +86,15 @@ function deleteProject(req, res) {
                 }
             }).catch((error) => {
                 logger.error("DELETE /project - " + decoded.id + " - results cannot be deleted: " + error);
-                return res.status(401).send(error);
+                return res.status(401).send(false);
             });
             // socket.io.emit("deleteProject", project);
             // console.log("/project/delete: " + data);
             logger.info("DELETE /project - " + decoded.id + " - project (" + project._id + ") deleted !");
-            return res.status(200).send(project);
+            return res.status(200).send(true);
         }).catch((error) => {
             logger.error("DELETE /project - " + decoded.id + " - project cannot be deleted: " + error);
-            return res.status(401).send(error);
+            return res.status(401).send(false);
         });
     }
 }
@@ -112,18 +112,32 @@ function getProjectsByUser(req, res) {
     }
 }
 
-function getProjectByNameAndUser(req, res) {
+function getProject(req, res) {
     const decoded = auth.verify(req, res);
     if (decoded != null) {
-        logger.info("GET /project - " + decoded.id + " - getProjectByNameAndUser()");
-        Project.find({ userID: decoded.id, projectName: req.query.projectName }).then((project) => {
-            res.status(200).send(project);
-            // console.log(project);
-        }).catch((error) => {
-            logger.error("GET /project - " + decoded.id + " - error when fetching projects: " + error);
-            return res.status(401).send(error);
-        });
+        logger.info("GET /project - " + decoded.id + " - getProject()");
+        if (req.query.projectName != null) {
+            Project.find({ userID: decoded.id, projectName: req.query.projectName }).then((project) => {
+                res.status(200).send(project);
+                // console.log(project);
+            }).catch((error) => {
+                logger.error("GET /project - " + decoded.id + " - error when fetching projects: " + error);
+                return res.status(401).send(error);
+            });
+        } else if (req.query.id != null) {
+            Project.find({ userID: decoded.id, _id: req.query.id }).then((project) => {
+                res.status(200).send(project);
+                // console.log(project);
+            }).catch((error) => {
+                logger.error("GET /project - " + decoded.id + " - error when fetching projects: " + error);
+                return res.status(401).send(error);
+            });
+        } else {
+            logger.error("GET /results - " + decoded.id + " - a project ID or the project name must be provided in the query ...")
+            return res.status(401).send("a project ID or the project name must be provided in the query ...");
+        }
+        
     }
 }
 
-module.exports = { create, deleteProject, getProjectsByUser, getProjectByNameAndUser }
+module.exports = { create, deleteProject, getProjectsByUser, getProject }

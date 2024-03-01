@@ -38,4 +38,8 @@ export default {
   background-color: #f8f9fa; /* Customize background color */
   padding: 10px; /* Customize padding */
 }
+
+.container-lg {
+  max-width: 1500px;
+}
 </style>

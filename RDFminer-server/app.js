@@ -41,7 +41,7 @@ express.app.route(prefix + "user").get(users.isExists);
 express.app.route(prefix + "params").get(params.get);
 // app.route(prefix + "spec").get(specifications.get);
 express.app.route(prefix + "publications").get(publications.get);
-express.app.route(prefix + "project").get(project.getProjectByNameAndUser).post(project.create).delete(project.deleteProject);
+express.app.route(prefix + "project").get(project.getProject).post(project.create).delete(project.deleteProject);
 express.app.route(prefix + "projects").get(project.getProjectsByUser);
 // app.route(prefix + "project").get(project.getProjectByNameAndUser);
 express.app.route(prefix + "results").get(results.get).put(results.update);

@@ -1,5 +1,5 @@
 <template>
-    <CButton color="success" @click="$store.commit('toggleCreateProjectPopup')">Create a new project</CButton>
+    <CButton color="success" @click="$store.commit('toggleCreateProjectPopup')" :disabled="!$store.state.isAuth">Create a new project</CButton>
     <br />
     <br />
     <CTable align="middle" class="mb-0 border" hover responsive striped>
@@ -39,7 +39,7 @@
                     <CButton color="danger" variant="outline" :disabled="project.status != 1" style="margin:5px;">
                         <CIcon icon="cil-media-stop" />Stop
                     </CButton>
-                    <CButton color="danger" style="margin:5px;" @click="console.log('todo')">
+                    <CButton color="danger" style="margin:5px;" @click="$store.commit('toggleDeleteProjectPopupVisible', project)">
                         <CIcon icon="cil-delete" />Delete
                     </CButton>
                     <!-- <CAvatar class="clickable" src="assets/cancel.png" />
@@ -108,14 +108,17 @@ export default {
         // console.log("Token: " + this.cookies.get("token"));
         // SOCKET IO
         // update project status
-        this.socket.on("update-status", (project) => {
-            console.log("[socket-io] update-status for project.id(" + project.id + ") - status: " + project.status);
-            this.$store.commit('updateProjects');
+        this.socket.on("update-status", (id) => {
+            if (this.$store.state.selectedProject._id == id) {
+                console.log("[socket-io] update-status for project.id(" + id + ")");
+                this.$store.commit('updateSelectedProject', id);
+                this.$store.commit('updateProjects');
+            }
         });
         // SOCKET IO
         this.socket.on("update-results", (id) => {
-            console.log("[socket-io] update-results: " + id);
             if (this.$store.state.selectedResults._id == id) {
+                console.log("[socket-io] update-results: " + id);
                 this.$store.commit('updateSelectedResults', this.$store.state.selectedProject);
             }
         });
