@@ -10,8 +10,7 @@ import DocsExample from '@/components/DocsExample'
 import VueCookies from 'vue3-cookies';
 
 const cookiesConfig = {
-    expireTimes: "1d",
-    secure: true
+    expireTimes: "1d"
 };
 
 const app = createApp(App)
