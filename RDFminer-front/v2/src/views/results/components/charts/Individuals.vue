@@ -88,6 +88,8 @@ export default {
                     {
                         label: 'Individuals',
                         pointBackgroundColor: function (context) {
+                            if (context.raw.y == null)
+                                return 'rgba(0,0,0,0)';
                             return 'rgba(' + Math.round(255 * context.raw.y) + ', ' + Math.round(255 * (1 - context.raw.y)) + ', 0, 1)';
                         },
                         data: this.$store.state.individualsData
