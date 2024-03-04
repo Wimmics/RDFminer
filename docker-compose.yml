@@ -53,6 +53,7 @@ services:
       context: ./RDFminer-front/.
       args:
         RDFMINER_SERVER_PORT: ${RDFMINER_SERVER_PORT}
+        RDFMINER_FRONT_MOD: ${RDFMINER_FRONT_MOD}
     ports:
       - '${RDFMINER_FRONT_PORT}:${RDFMINER_FRONT_PORT}'
     # volumes:
