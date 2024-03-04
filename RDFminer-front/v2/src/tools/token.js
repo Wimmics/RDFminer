@@ -5,3 +5,9 @@ export function getToken() {
         return "";
     return useCookies(["token"]).cookies.get("token"); 
 }
+
+export function getUsername() {
+    if (useCookies(["username"]).cookies.get("username") == null)
+        return "";
+    return useCookies(["username"]).cookies.get("username");
+}

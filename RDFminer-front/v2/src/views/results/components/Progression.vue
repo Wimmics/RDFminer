@@ -17,14 +17,14 @@
         <CCol sm="2">
             <Item 
                 :message="'Fetching data from RDF graph'" 
-                :checked="!($store.state.selectedProject.status > 0 && $store.state.selectedResults.generations.length == 0)"></Item>
+                :checked="!($store.state.selectedProject.status == 1 && $store.state.selectedResults.generations.length == 0)"></Item>
         </CCol>
         <CCol sm="2" style="display: flex; justify-content: center; flex-direction: column;">
             <CProgress>
                 <CProgressBar 
-                    :color="$store.state.selectedProject.status > 0 && $store.state.selectedResults.generations.length == 0 ? 'warning' : 'success'" 
+                    :color="$store.state.selectedProject.status == 1 && $store.state.selectedResults.generations.length == 0 ? 'warning' : 'success'" 
                     :value="100" 
-                    :variant="$store.state.selectedProject.status > 0 && $store.state.selectedResults.generations.length == 0 ? 'striped': ''" 
+                    :variant="$store.state.selectedProject.status == 1 && $store.state.selectedResults.generations.length == 0 ? 'striped': ''" 
                     animated/>
             </CProgress>
         </CCol>

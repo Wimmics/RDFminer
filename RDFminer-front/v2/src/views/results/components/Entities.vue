@@ -50,14 +50,12 @@ export default {
     data() {
         return {
             headers: [],
-            entities: [],
-            phenotypes: [],
         };
     },
     mounted() {
         // this.entities = this.results.entities;
         // Header
-        this.headers = ["SHACL Shape (" + this.entities.length + ")", "Reference Cardinality", "#Exceptions", "#Confirmations", "Likelihood", "Fitness Score", "Acceptance", "Elite"];
+        this.headers = ["SHACL Shape", "Reference Cardinality", "#Exceptions", "#Confirmations", "Likelihood", "Fitness Score", "Acceptance", "Elite"];
     }
 }
 </script>

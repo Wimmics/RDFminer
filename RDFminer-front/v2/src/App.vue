@@ -7,6 +7,7 @@
   <SuccessCreation></SuccessCreation>
   <DeleteProject></DeleteProject>
   <Register></Register>
+  <StopProject></StopProject>
 </template>
 
 <script>
@@ -16,12 +17,13 @@ import CreateProject from './views/popup/CreateProject.vue';
 import SuccessCreation from './views/popup/SuccessCreation.vue';
 import DeleteProject from './views/popup/DeleteProject.vue';
 import Register from './views/popup/Register.vue';
+import StopProject from '@/views/popup/StopProject.vue';
 
 export default {
   name: 'App',
   components: {
     Login, DetailsPopup, CreateProject, SuccessCreation, DeleteProject,
-    Register
+    Register, StopProject
 },
 }
 </script>

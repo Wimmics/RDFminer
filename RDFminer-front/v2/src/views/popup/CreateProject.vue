@@ -27,7 +27,7 @@
                         <CRow class="mb-3">
                             <CFormLabel class="col-sm-2 col-form-label">Load parameters from existing project</CFormLabel>
                             <CCol sm="10">
-                                <CFormSelect v-model="projectToLoad">
+                                <CFormSelect v-model="projectToLoad" :disabled="$store.state.projects.length == 0">
                                     <option selected disabled>Select an existing project settings </option>
                                     <option v-for="project in $store.state.projects" :key="project" :value="project.projectName">{{ project.projectName }}</option>
                                 </CFormSelect>
@@ -531,7 +531,9 @@ export default {
             const data = await post("api/project", {}, this.getForm());
             // if it has been pushed into the cluster
             if (data) {
+                // close form 
                 this.$store.commit('toggleCreateProjectPopup');
+                // confirm creation
                 this.$store.commit('toggleSuccessCreationPopupVisible', data);
                 this.$store.commit('updateProjects');
             }
@@ -631,7 +633,7 @@ export default {
             this.selectedGrammar                    = project.grammar;
             this.selectedPopulationSize             = project.populationSize;
             this.selectedEffort                     = project.effort;
-            this.selectedStopCriterion              = project.stopCriterionType;
+            this.selectedStopCriterion              = project.stopCriterion;
             this.selectedMaxMiningTime              = project.maxMiningTime;
             this.selectedSizeChromosome             = project.sizeChromosome;
             this.selectedMaxWrap                    = project.maxWrap;

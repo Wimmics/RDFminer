@@ -23,7 +23,7 @@
                     <!-- <CAvatar class="clickable" src="assets/dashboard.png" @click="redirectVisu(project.projectName)"
                     v-if="project.status != 0" /> -->
                     <CButton v-if="project.status != 0" @click="$store.commit('updateSelectedResults', project)" color="info"
-                        variant="outline">
+                        variant="outline" :active="$store.state.selectedProject.projectName == project.projectName">
                         <CIcon icon="cil-graph" />Results
                     </CButton>
                     <CButton disabled v-else>
@@ -36,7 +36,7 @@
                     <CImage src="assets/start.png" width="20" height="20" />
                     Start
                 </CButton> -->
-                    <CButton color="danger" variant="outline" :disabled="project.status != 1" style="margin:5px;">
+                    <CButton color="danger" variant="outline" style="margin:5px;" @click="$store.commit('toggleStopProjectPopupVisible', project)" :disabled="project.status != 1">
                         <CIcon icon="cil-media-stop" />Stop
                     </CButton>
                     <CButton color="danger" style="margin:5px;" @click="$store.commit('toggleDeleteProjectPopupVisible', project)">

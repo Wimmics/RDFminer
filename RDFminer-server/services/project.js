@@ -8,7 +8,8 @@ const Logger = require("../tools/logger.js");
 const path = require("path");
 const logger = Logger.getLogger(path.basename(__filename));
 const auth = require("../auth/auth");
-const socket = require("../servers/express");
+// const socket = require("../servers/express");
+var request = require('request');
 
 async function create(req, res) {
     const decoded = auth.verify(req, res);
@@ -70,7 +71,7 @@ async function create(req, res) {
             logger.error("POST /project - " + decoded.id + " - " + error);
             return res.status(401).send();
         });
-        
+
     }
 }
 
@@ -96,6 +97,43 @@ function deleteProject(req, res) {
             logger.error("DELETE /project - " + decoded.id + " - project cannot be deleted: " + error);
             return res.status(401).send(false);
         });
+    }
+}
+
+function stopProject(req, res) {
+    const decoded = auth.verify(req, res);
+    if (decoded != null) {
+        logger.info("PUT /project - " + decoded.id + " - stopProject()");
+        if (req.body.projectName != null) {
+            // update status
+            Project.updateOne(
+                { userID: decoded.id, projectName: req.body.projectName },
+                { status: Status.STOPPING }
+            ).then(() => {
+                // send stopping request to RDFminer-core
+                request({
+                    'method': 'GET',
+                    'url': 'http://rdfminer:8891/core/stop?projectName=' + req.body.projectName,
+                    'headers': {}
+                }, (error, response) => {
+                    if (error) {
+                        logger.error("GET /core/stop - " + decoded.id + " - error when stopping the project: " + error);
+                        return res.status(401).send();
+                    } else {
+                        Project.updateOne(
+                            { userID: decoded.id, projectName: req.body.projectName },
+                            { status: Status.FINISH }
+                        ).then(() => { 
+                            logger.info("GET /core/stop - " + decoded.id + " - the project has been stopped !");
+                            return res.status(200).send(response);
+                        });
+                    }
+                });
+            });
+        } else {
+            logger.error("PUT /project - " + decoded.id + " - The project name is not provided...");
+            return res.status(401).send();
+        }
     }
 }
 
@@ -136,8 +174,7 @@ function getProject(req, res) {
             logger.error("GET /results - " + decoded.id + " - a project ID or the project name must be provided in the query ...")
             return res.status(401).send("a project ID or the project name must be provided in the query ...");
         }
-        
     }
 }
 
-module.exports = { create, deleteProject, getProjectsByUser, getProject }
+module.exports = { create, stopProject, deleteProject, getProjectsByUser, getProject }

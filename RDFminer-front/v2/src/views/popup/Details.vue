@@ -1,5 +1,5 @@
 <template>
-    <CModal :visible="$store.state.detailsPopupVisible" @close="$store.commit('toggleDetailsPopup', {})" alignment="center" scrollable size="xl">
+    <CModal :visible="$store.state.detailsPopupVisible" @close="$store.commit('toggleDetailsPopup', $store.state.selectedProject)" alignment="center" scrollable size="xl">
         <CModalHeader>
             <CModalTitle>Settings of <b>{{ $store.state.selectedProject.projectName }}</b></CModalTitle>
         </CModalHeader>

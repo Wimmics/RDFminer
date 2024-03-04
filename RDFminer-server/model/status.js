@@ -3,6 +3,7 @@ class Status {
     static PENDING      = 0;
     static IN_PROGRESS  = 1;
     static FINISH       = 2;
+    static STOPPING     = 3;
 
     static SERVER_AVALAIBLE     = "available";
     static SERVER_BUSY          = "busy";

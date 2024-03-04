@@ -55,8 +55,8 @@ services:
         RDFMINER_SERVER_PORT: ${RDFMINER_SERVER_PORT}
     ports:
       - '${RDFMINER_FRONT_PORT}:${RDFMINER_FRONT_PORT}'
-    volumes:
-      - /app/node_modules
+    # volumes:
+    #   - /app/node_modules
     depends_on:
       - server
   # Corese 
