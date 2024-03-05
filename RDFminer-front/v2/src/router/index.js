@@ -8,10 +8,10 @@ const routes = [
     path: '/',
     name: 'Home',
     component: DefaultLayout,
-    redirect: '/dashboard',
+    // redirect: '/dashboard',
     children: [
       {
-        path: '/dashboard',
+        path: '/',
         name: 'Dashboard',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
