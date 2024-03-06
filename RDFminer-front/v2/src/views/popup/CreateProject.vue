@@ -351,7 +351,7 @@
                                     </CCol>
                                 </CRow>
                             </div>
-                            <div v-if="selectedMod.includes('af')">
+                            <div v-else>
                                 <!-- 
                             OWL axioms file 
                         -->
@@ -370,6 +370,7 @@
                 <!--
                     Launch XP
                 -->
+                <br />
                 <CButton color="success" @click="postProject">Let's go</CButton>
             </CForm>
         </CModalBody>

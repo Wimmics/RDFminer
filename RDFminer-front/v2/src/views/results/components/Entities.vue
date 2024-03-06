@@ -26,13 +26,13 @@
 
 
 <script>
-import { CTable, CTableHead, CTableRow, CTableBody, CTableFoot, CTableDataCell, CTableHeaderCell, CIcon } from "@coreui/vue";
+// import { CTable, CTableHead, CTableRow, CTableBody, CTableFoot, CTableDataCell, CTableHeaderCell, CIcon } from "@coreui/vue";
 
 export default {
     name: 'Entities',
-    components: {
-        CTable, CTableHead, CTableRow, CTableBody, CTableFoot, CTableDataCell, CTableHeaderCell, CIcon
-    },
+    // components: {
+    //     CTable, CTableHead, CTableRow, CTableBody, CTableFoot, CTableDataCell, CTableHeaderCell, CIcon
+    // },
     methods: {
         getColor(accepted) {
             if (accepted)
@@ -60,10 +60,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<!-- <style scoped>
 .scroll {
-    height: 700px;
+    height: 30em;
     overflow-x: hidden;
     overflow-y: auto;
 }
-</style>
+</style> -->

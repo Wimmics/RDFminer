@@ -1,62 +1,71 @@
 <template>
-    <CButton color="success" @click="$store.commit('toggleCreateProjectPopup')" :disabled="!$store.state.isAuth">Create a new project</CButton>
+    <CButton color="success" @click="$store.commit('toggleCreateProjectPopup')" :disabled="!$store.state.isAuth">Create
+        a new project</CButton>
     <br />
     <br />
-    <CTable align="middle" class="mb-0 border" hover responsive striped>
-        <CTableHead color="light">
-            <CTableRow>
-                <CTableHeaderCell v-for="header in headers" :key="header" scope="col">{{ header }}</CTableHeaderCell>
-            </CTableRow>
-        </CTableHead>
-        <CTableBody>
-            <CTableRow v-for="project in $store.state.projects" :key="project" align="middle">
-                <CTableHeaderCell scope="row">{{ project.projectName }}</CTableHeaderCell>
-                <!-- <CTableDataCell>{{ project.mod }}</CTableDataCell> -->
-                <!-- <CTableDataCell><a :href="project.targetSparqlEndpoint">{{ project.targetSparqlEndpoint }}</a> -->
-                <!-- </CTableDataCell> -->
-                <CTableDataCell>
-                    <CButton color="primary" variant="outline" style="margin:5px;" @click="$store.commit('toggleDetailsPopup', project)">
-                        <CIcon icon="cil-equalizer" />Details
-                    </CButton>
-                </CTableDataCell>
-                <CTableDataCell>
-                    <!-- <CAvatar class="clickable" src="assets/dashboard.png" @click="redirectVisu(project.projectName)"
+    <div class="scroll">
+        <CTable align="middle" class="mb-0 border" hover responsive striped>
+            <CTableHead color="light">
+                <CTableRow>
+                    <CTableHeaderCell v-for="header in headers" :key="header" scope="col">{{ header }}
+                    </CTableHeaderCell>
+                </CTableRow>
+            </CTableHead>
+            <CTableBody>
+                <CTableRow v-for="project in $store.state.projects" :key="project" align="middle">
+                    <CTableHeaderCell scope="row">{{ project.projectName }}</CTableHeaderCell>
+                    <!-- <CTableDataCell>{{ project.mod }}</CTableDataCell> -->
+                    <!-- <CTableDataCell><a :href="project.targetSparqlEndpoint">{{ project.targetSparqlEndpoint }}</a> -->
+                    <!-- </CTableDataCell> -->
+                    <CTableDataCell>
+                        <CButton color="primary" variant="outline" style="margin:5px;"
+                            @click="$store.commit('toggleDetailsPopup', project)">
+                            <CIcon icon="cil-equalizer" />Details
+                        </CButton>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        <!-- <CAvatar class="clickable" src="assets/dashboard.png" @click="redirectVisu(project.projectName)"
                     v-if="project.status != 0" /> -->
-                    <CButton v-if="project.status != 0" @click="$store.commit('updateSelectedResults', project)" color="info"
-                        variant="outline" :active="$store.state.selectedProject.projectName == project.projectName">
-                        <CIcon icon="cil-graph" />Results
-                    </CButton>
-                    <CButton disabled v-else>
-                        <CSpinner variant="grow" size="sm" aria-hidden="true" />
-                        Waiting for the server
-                    </CButton>
-                </CTableDataCell>
-                <CTableDataCell>
-                    <!-- <CButton color="success" variant="outline" :disabled="project.status != 0" style="margin:5px;">
+                        <CButton v-if="project.status != 0" @click="$store.commit('updateSelectedResults', project)"
+                            color="info" variant="outline"
+                            :active="$store.state.selectedProject.projectName == project.projectName">
+                            <CIcon icon="cil-graph" />Results
+                        </CButton>
+                        <CButton disabled v-else>
+                            <CSpinner variant="grow" size="sm" aria-hidden="true" />
+                            Waiting for the server
+                        </CButton>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        <!-- <CButton color="success" variant="outline" :disabled="project.status != 0" style="margin:5px;">
                     <CImage src="assets/start.png" width="20" height="20" />
                     Start
                 </CButton> -->
-                    <CButton color="danger" variant="outline" style="margin:5px;" @click="$store.commit('toggleStopProjectPopupVisible', project)" :disabled="project.status != 1">
-                        <CIcon icon="cil-media-stop" />Stop
-                    </CButton>
-                    <CButton color="danger" style="margin:5px;" @click="$store.commit('toggleDeleteProjectPopupVisible', project)">
-                        <CIcon icon="cil-delete" />Delete
-                    </CButton>
-                    <!-- <CAvatar class="clickable" src="assets/cancel.png" />
+                        <CButton color="danger" variant="outline" style="margin:5px;"
+                            @click="$store.commit('toggleStopProjectPopupVisible', project)"
+                            :disabled="project.status != 1">
+                            <CIcon icon="cil-media-stop" />Stop
+                        </CButton>
+                        <CButton color="danger" style="margin:5px;"
+                            @click="$store.commit('toggleDeleteProjectPopupVisible', project)">
+                            <CIcon icon="cil-delete" />Delete
+                        </CButton>
+                        <!-- <CAvatar class="clickable" src="assets/cancel.png" />
                 <CAvatar class="clickable" src="assets/dashboard.png" @click="redirectVisu(project.projectName)"
                     v-if="project.status != 0" />
                 <CAvatar class="clickable" src="assets/garbage.png" @click="deletePopup(project.projectName)" /> -->
-                </CTableDataCell>
-                <CTableDataCell :color="getColor(project.status)" style="font-weight: bold;">
-                    <CSpinner :variant="project.status < 1 ? 'grow' : 'border'" v-if="project.status != 2" size="sm"
-                        style="margin-right:10px;" />{{
-                            status[project.status].text }}
-                </CTableDataCell>
-            </CTableRow>
-        </CTableBody>
-        <CTableFoot>
-        </CTableFoot>
-    </CTable>
+                    </CTableDataCell>
+                    <CTableDataCell :color="getColor(project.status)" style="font-weight: bold;">
+                        <CSpinner :variant="project.status < 1 ? 'grow' : 'border'" v-if="project.status != 2" size="sm"
+                            style="margin-right:10px;" />{{
+        status[project.status].text }}
+                    </CTableDataCell>
+                </CTableRow>
+            </CTableBody>
+            <CTableFoot>
+            </CTableFoot>
+        </CTable>
+    </div>
 </template>
 
 

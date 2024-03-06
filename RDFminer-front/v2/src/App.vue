@@ -31,4 +31,11 @@ export default {
 <style lang="scss">
 // Import Main styles for this application
 @import 'styles/style';
+
+.scroll {
+    min-height: auto;
+    max-height: 30em;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 </style>
