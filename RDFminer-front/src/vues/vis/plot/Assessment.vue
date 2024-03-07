@@ -56,12 +56,6 @@ export default {
         results: {
             type: Object
         },
-        path: {
-            type: String
-        },
-        task: {
-            type: String
-        }
     },
     data() {
         return {

@@ -4,6 +4,7 @@
 package com.i3s.app.rdfminer;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -11,13 +12,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This is a singleton !
  * @author Andrea G. B. Tettamanzi & Rémi Felin
  */
+@JsonIgnoreProperties(value = { "_id", "__v", "status"})
 public class Parameters {
 
 	private static Parameters instance = null;
 
 	private Parameters() {}
 
-	@JsonProperty("username")
+	@JsonProperty("userID")
 	private String userID = "admin";
 
 	@JsonProperty("projectName")
@@ -38,13 +40,13 @@ public class Parameters {
 	@JsonProperty("populationSize")
 	private int populationSize = 100;
 
-	@JsonProperty("stopCriterionType")
+	@JsonProperty("stopCriterion")
 	private int stopCriterion = 1;
 
 	@JsonProperty("effort")
 	private int effort = 5000;
 
-	@JsonProperty("time")
+	@JsonProperty("maxMiningTime")
 	private int maxMiningTime = 30;
 
 	@JsonProperty("sizeChromosome")
@@ -72,13 +74,13 @@ public class Parameters {
 	@JsonProperty("crossoverType")
 	private int crossoverType = 1;
 
-	@JsonProperty("crossoverRate")
+	@JsonProperty("proCrossover")
 	private double proCrossover = 0.8;
 
 	@JsonProperty("mutationType")
 	private int mutationType = 1;
 
-	@JsonProperty("mutationRate")
+	@JsonProperty("proMutation")
 	private double proMutation = 0.01;
 
 	// Shapes or axioms to evaluate
@@ -91,11 +93,14 @@ public class Parameters {
 
 	// Probabilistic SHACL
 
-	@JsonProperty("shaclProb")
+	@JsonProperty("probShaclP")
 	private double probShaclP = 0.05;
 
-	@JsonProperty("shaclAlpha")
+	@JsonProperty("probShaclAlpha")
 	private double probShaclAlpha = 0.05;
+
+	@JsonProperty("resultsID")
+	private String resultsID;
 
 	/**
 	 * The timeout used for SPARQL queries <i>(default value: 600,000 ms)</i>
@@ -111,8 +116,6 @@ public class Parameters {
 	public boolean grammaticalEvolution;
 
 	public int maxValCodon = Integer.MAX_VALUE;
-
-	public int checkpoint = 1;
 
 	public String getUserID() {
 		return userID;
@@ -213,6 +216,8 @@ public class Parameters {
 	public long getSparqlTimeOut() {
 		return sparqlTimeOut;
 	}
+
+	public String getResultsID() { return resultsID; }
 
 	public boolean isUseNoveltySearch() {
 		return useNoveltySearch;

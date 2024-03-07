@@ -130,6 +130,7 @@ dist
 .pnp.*
 
 # Maven, Java
+target/
 *.class
 pom.xml.tag
 pom.xml.releaseBackup
@@ -154,7 +155,9 @@ buildNumber.properties
 *.jrnl
 *.lock
 *.log
-# .env (production settings)
-prod.env
+*.opt
 # corese .git
 corese/ignore.git/
+#
+*.rdb
+IO/

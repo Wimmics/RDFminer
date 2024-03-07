@@ -6,10 +6,12 @@ ARG RDFMINER_VERSION
 ARG RDFMINER_SERVER_PORT
 ARG CORESE_PORT
 ARG HOME
+ARG RDFMINER_CORE_PORT
 ENV RDFMINER_VERSION=$RDFMINER_VERSION
 ENV RDFMINER_SERVER_PORT=$RDFMINER_SERVER_PORT
 ENV CORESE_PORT=$CORESE_PORT
 ENV HOME=$HOME
+ENV RDFMINER_CORE_PORT=$RDFMINER_CORE_PORT
 # Update
 RUN apt-get update
 # Install gcc 
@@ -19,16 +21,6 @@ RUN echo "\n"$(gcc --version)"\n"
 COPY . $HOME
 # Compile c code by running "compile_c_code" shell code
 RUN echo -n "Compile rdfminer_entity_Entity.so ... " && sh $HOME/scripts/compile_c_code.sh && echo "Done."
-# Install SPIN 2.0.0 (from http://topquadrant.com/repository/spin/)
-# echo "\n********** Install SPIN 2.0.0 ..." && \
-RUN mvn install:install-file \
-        -Dfile=/rdfminer/dep/org/topbraid/spin/2.0.0/spin-2.0.0.jar \
-        -DgroupId=org.topbraid \
-        -DartifactId=spin \
-        -Dversion=2.0.0 \
-        -Dpackaging=jar \
-        -DgeneratePom=true \
-        --quiet
 # run command 'mvn clean install' to build RDFMiner jar 
 RUN cd $HOME/code && mvn clean install
 # Uninstall GCC and clean

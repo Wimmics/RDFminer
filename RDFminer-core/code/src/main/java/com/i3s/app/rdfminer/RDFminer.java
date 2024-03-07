@@ -10,7 +10,10 @@ import com.i3s.app.rdfminer.launcher.Evaluator;
 import com.i3s.app.rdfminer.launcher.GrammaticalEvolution;
 import com.i3s.app.rdfminer.output.Results;
 import com.i3s.app.rdfminer.output.SimilarityMap;
-import org.apache.log4j.*;
+import com.i3s.app.rdfminer.sparql.corese.CoreseEndpoint;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -67,6 +70,10 @@ public class RDFminer {
 			// require SHACL shapes generator to build well-formed candidates
 			// grammatical evolution will be used
 			case Mod.SHAPE_MINING:
+				// count the total number of RDF triples in the graph
+				// use the result for each prob. shacl validation
+				CoreseEndpoint endpoint = new CoreseEndpoint(this.parameters.getNamedDataGraph(), this.parameters.getPrefixes());
+				Global.nTriples = endpoint.count("*", "?s ?p ?o", false);
 				// init generator with BNF grammar provided by user
 				generator = new RandomShapeGenerator(this.parameters.getGrammar());
 				evolution = new GrammaticalEvolution();
@@ -96,6 +103,10 @@ public class RDFminer {
 			// OWL axioms or SHACL shapes assessment
 			// The system can assess (1) SubClassOf and DisjointClass oxioms and (2) SHACL shapes
 			case Mod.AXIOM_ASSESSMENT:
+				// launch evaluator
+				evaluator = new Evaluator();
+				evaluator.run(this.parameters.getMod());
+				break;
 			case Mod.SHAPE_ASSESSMENT:
 				// launch evaluator
 				evaluator = new Evaluator();
@@ -109,10 +120,10 @@ public class RDFminer {
 
 	private void configureFileLogger() {
 		Results results = Results.getInstance();
-		String filePath = "/user/rfelin/home/projects/RDFMining/IO/logs/" + results.getLogs();
+		String filePath = Global.LOGS + results.getLogs();
 		// set properties
 		Properties props = new Properties();
-		props.put("log4j.rootLogger", "DEBUG, A1");
+		props.put("log4j.rootLogger", "INFO, A1");
 		props.put("log4j.appender.A1", "org.apache.log4j.RollingFileAppender");
 		props.put("log4j.appender.A1.File", filePath);
 		// Deal with 'very' huge experiments
@@ -128,7 +139,7 @@ public class RDFminer {
 		for(String line : Global.BANNER) {
 			logger.info(line);
 		}
-		logger.info("This is RDFminer v." + System.getenv("RDFMINER_VERSION") + " !");
+		logger.info("This is RDFminer v." + Global.VERSION + " !");
 	}
 
 }

@@ -6,7 +6,7 @@ const logger = Logger.getLogger(path.basename(__filename));
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-logger.info("connection to MongoDB...");
+logger.info("connection to MongoDB (URL: " + process.env.RDFMINER_SERVER_MONGODB_CONNECTION + ")");
 
 // MONGOOSE
 // Connection

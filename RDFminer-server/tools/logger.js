@@ -1,6 +1,4 @@
 const winston = require("winston");
-const Global = require("../docker/global");
-const path = require("path");
 
 class Logger {
     /**
@@ -11,7 +9,7 @@ class Logger {
         return winston.createLogger({
             level: "info",
             format: winston.format.combine(
-                winston.format.colorize({ message: true }),
+                // winston.format.colorize({ message: true }),
                 winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
                 winston.format.errors({ stack: true }),
                 winston.format.printf((info) => {
@@ -21,7 +19,7 @@ class Logger {
             ),
             transports: [
                 new winston.transports.Console(),
-                new winston.transports.File({ filename: Global.getPath() }),
+                new winston.transports.File({ filename: "logs/" + new Date().toISOString().slice(0,10) + ".log" }),
             ],
         });
     }

@@ -5,11 +5,11 @@
             <CAccordionHeader>Dashboard</CAccordionHeader>
             <CAccordionBody>
                 <!-- <VisuEntities v-if="isReady" :results="results"></VisuEntities> -->
-                <VisGrammaticalEvolution v-if="isReady && task=='Mining'" :results="results" :path="path" :task="'Mining'"></VisGrammaticalEvolution>
+                <!-- <VHeader v-if="isReady && results.mod == 1 || this.results.mod == 3" :results="results" :path="path" :task="'Mining'"></VHeader> -->
                 <br/>
-                <VueStatistics v-if="isReady && task=='Mining'" :results="results"></VueStatistics>
+                <VueStatistics v-if="isReady" :results="results"></VueStatistics>
                 <!-- Eval -->
-                <VisAssessment v-if="isReady && task=='Assessment'" :results="results" :path="path" :task="'Assessment'"></VisAssessment>
+                <!-- <VisAssessment v-if="isReady && task=='Assessment'" :results="results" :path="path" :task="'Assessment'"></VisAssessment> -->
                 <br/>
                 <BubbleEntities v-if="isReady" :results="results"></BubbleEntities>
             </CAccordionBody>
@@ -27,9 +27,9 @@
         </CAccordionItem> -->
         <CAccordionItem :item-key="3">
             <CAccordionHeader>Console log</CAccordionHeader>
-            <CAccordionBody>
+            <!-- <CAccordionBody>
                 <ConsoleLog v-if="isReady" :path="path"></ConsoleLog>
-            </CAccordionBody>
+            </CAccordionBody> -->
         </CAccordionItem>
     </CAccordion>
 </template>
@@ -39,9 +39,9 @@ import { CAccordion, CAccordionItem, CAccordionHeader, CAccordionBody } from '@c
 // import { useCookies } from "vue3-cookies";
 import VueStatistics from './plot/Statistics.vue';
 import VisuEntities from './Entities.vue';
-import ConsoleLog from './ConsoleLog.vue';
-import VisGrammaticalEvolution from './plot/GrammaticalEvolution.vue';
-import VisAssessment from './plot/Assessment.vue';
+// import ConsoleLog from './ConsoleLog.vue';
+// import VHeader from './plot/Header.vue';
+// import VisAssessment from './plot/Assessment.vue';
 // import axios from 'axios';
 import BubbleEntities from './plot/BubbleEntities.vue';
 import { get } from '@/tools/api';
@@ -50,50 +50,28 @@ export default {
     name: 'VueVisualisation',
     components: {
         VueStatistics, VisuEntities, CAccordion, CAccordionItem, CAccordionHeader, 
-        CAccordionBody, ConsoleLog, VisGrammaticalEvolution, VisAssessment, BubbleEntities
+        CAccordionBody, BubbleEntities
     },
     data() {
         return {
             // cookies: useCookies(["token", "id"]).cookies,
             id: "",
-            task: "",
             results: {},
-            path: "",
             isReady: false,
         };
     },
     methods: {
         async getResults(id) {
-            this.results = await get("api/results", { resultsId: id });
-            this.path = this.results.userId + "/" + this.results.projectName;
+            this.results = await get("api/results", { resultsID: id });
             this.isReady = true;
         }
     },
     mounted() {
-        this.task = this.$route.params.task;
         // console.log("TASK:" + this.task);
-        this.id = this.$route.params.resultsId;
+        this.id = this.$route.params.resultsID;
         // get results from API
         this.getResults(this.id);
         // console.log(this.task);
-        // console.log(this.id);
-        // get results from server
-        // axios.get("api/results", { 
-        //     params: { resultsId: this.id },
-        //     headers: { "x-access-token": this.cookies.get("token") } 
-        // }).then(
-        //     (response) => {
-        //         if (response.status === 200) {
-        //             if (response.data != {}) {
-        //                 this.results = response.data;
-        //                 this.path = this.results.userId + "/" + this.results.projectName;
-        //                 this.isReady = true;
-        //             }
-        //         }
-        //     }
-        // ).catch((error) => {
-        //     console.log(error);
-        // });
     },
 }
 </script>

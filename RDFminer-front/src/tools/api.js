@@ -6,9 +6,11 @@ export async function get(endpoint, params) {
     console.log(base + "/" + endpoint)
     const r = await axios.get(
         base + "/" + endpoint, 
-        { headers: { "x-access-token": getToken() },
-        params: params
-    }).catch((error) => {
+        { 
+            headers: { "x-access-token": getToken() },
+            params: params
+        }
+    ).catch((error) => {
         console.log(error);
     });
     return await process(r);

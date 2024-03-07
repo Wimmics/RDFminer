@@ -47,7 +47,7 @@ public abstract class ShapeGenerator extends Generator {
                 if (rule.get(0).toString().contains(sparql)) {
                     String body = rule.get(0).toString().replace(sparql, "");
 //                    System.out.println("SELECT distinct ?" + rule.getLHS().getSymbolString() + " WHERE { " + body + " FILTER( strStarts(MD5(str(?" + rule.getLHS().getSymbolString() + ")), " + h + ") ) }");
-                    generateProductions(rule.getLHS().getSymbolString(), getSparqlQuery(rule.getLHS().getSymbolString(), body, h));
+                    generateProductions(rule.getLHS().getSymbolString(), getSparqlBody(rule.getLHS().getSymbolString(), body, h));
                 }
             }
         }
@@ -98,7 +98,7 @@ public abstract class ShapeGenerator extends Generator {
             logger.info("Cache for " + symbol + " not found. Querying SPARQL endpoint");
             logger.info("Querying SPARQL endpoint for symbol <" + symbol + "> ...");
             CoreseEndpoint endpoint = new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes());
-            List<String> results = endpoint.select(symbol, sparql, false);
+            List<String> results = endpoint.select("?" + symbol, sparql, true);
             if(results.size() > 0) {
                 PrintStream cache = null;
                 try {

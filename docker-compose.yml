@@ -8,16 +8,43 @@ services:
     build:
       context: ./RDFminer-core/.
       args:
+        RDFMINER_CORE_PORT: ${RDFMINER_CORE_PORT}
         RDFMINER_VERSION: ${RDFMINER_VERSION}
         RDFMINER_SERVER_PORT: ${RDFMINER_SERVER_PORT}
         CORESE_PORT: ${CORESE_PORT}
         HOME: ${RDFMINER_HOME}
     command: launch
+    ports:
+      - '${RDFMINER_CORE_PORT}:${RDFMINER_CORE_PORT}'
     volumes:
       - type: bind
-        source: ${RDFMINER_ROOT}/IO
+        source: ./IO
         target: /rdfminer/io
-  # RDFMiner-front
+    depends_on:
+      - corese
+  # RDFminer-server
+  server:
+    restart: always
+    image: rdfminer-server:${RDFMINER_VERSION}
+    hostname: server
+    build:
+      context: ./RDFminer-server/.
+      args:
+        RDFMINER_SERVER_PORT: ${RDFMINER_SERVER_PORT}
+        RDFMINER_SERVER_MONGODB_PORT: ${RDFMINER_SERVER_MONGODB_PORT}
+        RDFMINER_SERVER_MONGODB_CONNECTION: ${RDFMINER_SERVER_MONGODB_CONNECTION}
+        RDFMINER_SERVER_AUTH_KEY: ${RDFMINER_SERVER_AUTH_KEY}
+        RDFMINER_SERVER_MONGODB_DATAPATH: ${RDFMINER_SERVER_MONGODB_DATAPATH}
+        RDFMINER_SERVER_REDIS_PORT: ${RDFMINER_SERVER_REDIS_PORT}
+    ports:
+      - '${RDFMINER_SERVER_PORT}:${RDFMINER_SERVER_PORT}'
+    # volumes:
+    #   - /app/node_modules
+    depends_on:
+      - mongo
+      - redis
+      - rdfminer
+  # RDFminer-front
   front:
     restart: always
     image: rdfminer-front:${RDFMINER_VERSION}
@@ -25,15 +52,27 @@ services:
     build:
       context: ./RDFminer-front/.
       args:
-        APP: /app
-        RDFMINER_FRONT_PORT: ${RDFMINER_FRONT_PORT}
-        RDFMINER_FRONT_ENDPOINT: ${RDFMINER_FRONT_ENDPOINT}
-        RDFMINER_FRONT_SOCKET_ENDPOINT: ${RDFMINER_FRONT_SOCKET_ENDPOINT}
+        RDFMINER_SERVER_PORT: ${RDFMINER_SERVER_PORT}
+        RDFMINER_FRONT_MOD: ${RDFMINER_FRONT_MOD}
     ports:
       - '${RDFMINER_FRONT_PORT}:${RDFMINER_FRONT_PORT}'
-    volumes:
-      - ./RDFminer-front/:/app/
-      - /app/node_modules
+    # volumes:
+    #   - /app/node_modules
+    depends_on:
+      - server
+  # Corese 
+  corese:
+    restart: always
+    image: corese:${CORESE_VERSION}
+    hostname: corese
+    build:
+      context: ./corese/corese-server/build-docker/corese/.
+      args:
+        CORESE_VERSION: $CORESE_VERSION
+        CORESE_PORT: $CORESE_PORT
+        CORESE_STORAGE: $CORESE_STORAGE
+    ports:
+      - '${CORESE_PORT}:${CORESE_PORT}'
   # MongoDB
   mongo:
     restart: always
@@ -45,3 +84,14 @@ services:
       - type: bind
         source: ${RDFMINER_SERVER_MONGODB_DATAPATH}/data
         target: /data/db
+  # Redis-server
+  redis:
+    restart: always
+    image: redis:7.2.4-alpine
+    hostname: redis
+    ports:
+      - '${RDFMINER_SERVER_REDIS_PORT}:${RDFMINER_SERVER_REDIS_PORT}'
+    volumes:
+      - type: bind
+        source: ${RDFMINER_SERVER_REDIS_DATAPATH}/data
+        target: /data

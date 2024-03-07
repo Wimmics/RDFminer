@@ -20,16 +20,16 @@ public class RDFminerProcess {
         this.runningProcesses = new HashMap<>();
     }
 
-    public boolean setProcess(String userID, Thread thread) {
-        if (this.hasConflict(userID) || this.runningProcesses.keySet().size() >= Global.MAX_SIMULTANEOUS_EXEC) {
+    public boolean setProcess(String projectName, Thread thread) {
+        if (this.hasConflict(projectName) || this.runningProcesses.keySet().size() >= Global.MAX_SIMULTANEOUS_EXEC) {
             return false;
         }
-        this.runningProcesses.put(userID, thread);
+        this.runningProcesses.put(projectName, thread);
         return true;
     }
 
-    public Thread getThread(String userID) {
-        return this.runningProcesses.get(userID);
+    public Thread getThread(String projectName) {
+        return this.runningProcesses.get(projectName);
     }
 
     public void startThread(String userID) {
@@ -47,8 +47,8 @@ public class RDFminerProcess {
         }
     }
 
-    public boolean killProcess(String userID) {
-        Thread tokill = this.runningProcesses.get(userID);
+    public boolean killProcess(String projectName) {
+        Thread tokill = this.runningProcesses.get(projectName);
         if (tokill != null) {
             tokill.interrupt();
             try {
@@ -60,17 +60,17 @@ public class RDFminerProcess {
                 return false;
             }
             // clean runningProcesses ...
-            this.runningProcesses.remove(userID);
+            this.runningProcesses.remove(projectName);
             return true;
         } else {
-            MyLogger.warn("this user (id: " + userID + ") does not have a project running ...");
+            MyLogger.warn("project: " + projectName + " is not running ...");
             return true;
         }
     }
 
-    private boolean hasConflict(String userID) {
-        if (this.runningProcesses.containsKey(userID)) {
-            MyLogger.warn("this user (id: " + userID + ") already has a project running");
+    private boolean hasConflict(String projectName) {
+        if (this.runningProcesses.containsKey(projectName)) {
+            MyLogger.warn("project: " + projectName + " -> conflict (multi-exec)");
             return true;
         }
         return false;

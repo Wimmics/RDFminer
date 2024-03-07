@@ -17,9 +17,7 @@ public class Results {
 
     private static Results instance = null;
 
-    private String userID;
-
-    private String projectName;
+    private String _id;
 
     /**
      * This is a key to retrieve logs file into RDFminer logs folder if needed
@@ -29,16 +27,6 @@ public class Results {
     private ArrayList<JSONObject> entities = new ArrayList<>();
 
     private ArrayList<Generation> generations = new ArrayList<>();
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-        // define logs filename
-        this.setLogs();
-    }
 
     public void addEntity(Entity entity) {
         this.entities.add(entity.toJSON());
@@ -73,12 +61,16 @@ public class Results {
 //    }
 
     public void setLogs() {
-        this.logs = Instant.now().truncatedTo(ChronoUnit.MILLIS) + "_" + this.projectName.hashCode() + ".log";
+        this.logs = Instant.now().truncatedTo(ChronoUnit.MILLIS) + "_" + this._id + ".log";
     }
 
     public String getLogs() {
         return this.logs;
     }
+
+    public String get_id() { return _id; }
+
+    public void set_id(String _id) { this._id = _id; }
 
     public static Results getInstance() {
         if(instance == null) {
@@ -94,8 +86,7 @@ public class Results {
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
-        json.put("userID", this.userID);
-        json.put("projectName", this.projectName);
+        json.put("_id", this._id);
         json.put("logs", this.logs);
         json.put("entities", new JSONArray(entities));
         json.put("generations", new JSONArray(generations));

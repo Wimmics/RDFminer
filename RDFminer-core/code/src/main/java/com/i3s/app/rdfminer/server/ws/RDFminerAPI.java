@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  * RDFminer Web services
  * endpoints to exploit RDFminer tools (SHACL or OWL axioms mining; SHACL Validation; ...)
  */
-@Path("/")
+@Path("/core")
 public class RDFminerAPI {
 
     @POST
@@ -34,8 +34,8 @@ public class RDFminerAPI {
         MyLogger.info("project: " + parameters.getProjectName() + " is launched by " + parameters.getUserID());
         // instanciate results
         Results results = Results.getInstance();
-        results.setUserID(parameters.getUserID());
-        results.setProjectName(parameters.getProjectName());
+        results.set_id(parameters.getResultsID());
+        results.setLogs();
         results.resetLists();
         // init RDFminer processes manager
         RDFminerProcess processes = RDFminerProcess.getInstance();
@@ -55,9 +55,9 @@ public class RDFminerAPI {
             }
         });
         // submit task
-        if (processes.setProcess(parameters.getUserID(), task)) {
+        if (processes.setProcess(parameters.getProjectName(), task)) {
             // launch
-            processes.startThread(parameters.getUserID());
+            processes.startThread(parameters.getProjectName());
             MyLogger.info("project: " + parameters.getProjectName() + " (user: " + parameters.getUserID() + ") finished !");
             return Response.ok(results.toJSON().toString(2)).build();
         }
@@ -66,13 +66,13 @@ public class RDFminerAPI {
 
     @GET
     @Path("stop")
-    public Response stop(@QueryParam("userID") String userID) {
+    public Response stop(@QueryParam("projectName") String projectName) {
         RDFminerProcess processes = RDFminerProcess.getInstance();
         // return the instance of current results
         Results results = Results.getInstance();
         // kill process
-        if (processes.killProcess(userID)) {
-            MyLogger.info("user: " + userID + " has stopped its experiment ...");
+        if (processes.killProcess(projectName)) {
+            MyLogger.info("project: " + projectName + " has been stopped ...");
             return Response.ok(results.toJSON().toString(2)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("No RDFminer execution to stop ...").build();
