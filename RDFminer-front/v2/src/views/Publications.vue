@@ -10,7 +10,7 @@
             <option value="conferenceTitle">By conference</option>
             <option value="place">By place</option>
         </select> -->
-        <div v-for="paper in papers" :key="paper">
+        <div v-for="paper in sortedPapers()" :key="paper">
             <CCard>
                 <CCardBody>
                     <!-- <CCardHeader>PAPER TYPE</CCardHeader> -->
@@ -46,6 +46,7 @@
 <script>
 // import { publications } from '../data/publications.json'
 // import _ from 'lodash';
+import _ from 'lodash';
 import { get } from '@/tools/api';
 import { CCard, CCardBody, CCardText, CCardTitle, CCardSubtitle, CCardLink } from '@coreui/vue'
 // import { useCookies } from 'vue3-cookies'
@@ -66,6 +67,9 @@ export default {
         this.getPublications();
     },
     methods: {
+        sortedPapers() {
+            return _.orderBy(this.papers, 'date', 'desc');
+        },
         async getPublications() {
             // get project
             const publications = await get("api/publications", {});

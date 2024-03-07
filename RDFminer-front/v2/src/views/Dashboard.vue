@@ -1,10 +1,10 @@
 <template>
   <div>
     <h2 v-if="$store.state.isAuth">Hello {{ $store.state.username }}, nice to see you !</h2>
-    <h2 v-else>Welcome to the RDFminer App ! Please, <a class="clickable-link" @click="$store.commit('toggleLoginPopupVisible')">log in</a> or <a class="clickable-link" @click="$store.commit('toggleRegisterPopupVisible')">create an account</a> to use its features !</h2>
+    <h2 v-else style="text-align: center;">Welcome to the RDFminer App ! Please, <a class="clickable-link" @click="$store.commit('toggleLoginPopupVisible')">log in</a> or <a class="clickable-link" @click="$store.commit('toggleRegisterPopupVisible')">create an account</a> !</h2>
     <!-- <WidgetsStatsA /> -->
     <br />
-    <CRow>
+    <CRow v-if="$store.state.isAuth">
       <CCol :md="12">
         <CCard class="mb-4">
           <CCardHeader>
@@ -16,7 +16,7 @@
         </CCard>
       </CCol>
     </CRow>
-    <CRow>
+    <CRow v-if="$store.state.isAuth">
       <CCol :md="12">
         <CCard class="mb-4">
           <CCardHeader>  
