@@ -61,7 +61,7 @@ public class RDFminerAPI {
             MyLogger.info("project: " + parameters.getProjectName() + " (user: " + parameters.getUserID() + ") finished !");
             return Response.ok(results.toJSON().toString(2)).build();
         }
-        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("RDFminer-core is unavalaible (already in use, maintenance, ...), try it latter !").build();
+        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("RDFminer-core is already in use, please try it latter !").build();
     }
 
     @GET
