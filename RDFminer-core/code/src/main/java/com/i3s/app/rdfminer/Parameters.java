@@ -26,7 +26,7 @@ public class Parameters {
 	private String projectName = "results";
 
 	@JsonProperty("mod")
-	private int mod;
+	private int mod = 3;
 
 	@JsonProperty("prefixes")
 	private String prefixes = Global.PREFIXES;
@@ -75,7 +75,7 @@ public class Parameters {
 	private int crossoverType = 1;
 
 	@JsonProperty("proCrossover")
-	private double proCrossover = 0.8;
+	private double proCrossover = 0.75;
 
 	@JsonProperty("mutationType")
 	private int mutationType = 1;
