@@ -1,3 +1,11 @@
+<p align="center">
+    <a href="https://ns.inria.fr/rdfminer/">
+        <img src="https://raw.githubusercontent.com/Wimmics/RDFminer/main/RDFminer-front/v2/public/rdfminer.jpg" width="150" height="150" alt="rdfminer-logo">
+    </a>
+    <br>
+    <strong align="center">RDFminer-core</strong> 
+</p>
+
 # How to use RDFminer-core web services
 
 `RDFminer-core` relies on a Jetty server and provides a REST API to exploit the evolutionary algorithm for discovering SHACL shapes.
@@ -43,6 +51,7 @@ It launch the evolutionary process according to the provided `params`: it is a J
   "namedDataGraph": "https://example.org/graph#1",
   "grammar": "Shape := ' a ' NodeShape\nNodeShape := 'sh:NodeShape ; ' ShapeBody\nShapeBody := 'sh:targetClass ' Class ' ; ' ShapeProperty\nShapeProperty := ' sh:property [ ' PropertyBody ' ] . '\nPropertyBody := ' sh:path rdf:type ; sh:hasValue ' Class ' ; '\n#---------------------------------------------------------------\nClass := 'SPARQL ?x a ?Class .'",
   "populationSize": 20,
+  "tournamentSelectionRate": 0.2,
   "time": 5,
   "sizeChromosome": 2
 }

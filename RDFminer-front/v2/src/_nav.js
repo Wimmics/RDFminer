@@ -25,4 +25,10 @@ export default [
     to: '/contacts',
     icon: 'cil-pencil',
   },
+  {
+    component: 'CNavItem',
+    name: 'Tutorial',
+    to: '/tutorial',
+    icon: 'cilScreenDesktop'
+  }
 ]
