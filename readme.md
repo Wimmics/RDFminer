@@ -62,17 +62,10 @@ SubjectsOfTarget := "sh:targetSubjectsOf " Property " ; " ShapeProperty
 ObjectsOfTarget := "sh:targetObjectsOf " Property " ; " ValueTypeConstraintComponent " . "
 ShapeProperty := "sh:property [ " PropertyBody " ] . "
 PropertyBody := "sh:path " Property " ; " ValueTypeConstraintComponent " ; "
-ValueTypeConstraintComponent := ClassConstraint | DatatypeConstraint | NodeKindConstraint
-// Constraint Component IRI: sh:ClassConstraintComponent
-// The condition specified by sh:class is that each value node is a SHACL instance of a given type.
-ClassConstraint := "sh:class " Class
-// Constraint Component IRI: sh:DatatypeConstraintComponent
-// sh:datatype specifies a condition to be satisfied with regards to the datatype of each value node.
-DatatypeConstraint := "sh:datatype " DataType
-// Constraint Component IRI: sh:NodeKindConstraintComponent
-// sh:nodeKind specifies a condition to be satisfied by the RDF node kind of each value node.
+ValueTypeConstraintComponent := ClassConstraint | DatatypeConstraint | NodeKindConstraintinstance of a given type.
+ClassConstraint := "sh:class " Classdatatype of each value node.
+DatatypeConstraint := "sh:datatype " DataTypeeach value node.
 NodeKindConstraint := "sh:nodeKind " NodeKind
-// It can be: sh:BlankNode, sh:IRI, sh:Literal sh:BlankNodeOrIRI, sh:BlankNodeOrLiteral and sh:IRIOrLiteral
 NodeKind := "sh:BlankNode" | "sh:IRI" | "sh:Literal" | "sh:BlankNodeOrIRI" | "sh:BlankNodeOrLiteral" | "sh:IRIOrLiteral"
 Class := "SPARQL ?x a ?Class ."
 Property := "SPARQL ?subj ?Property ?obj . FILTER ( isIRI(?Property) ) ."
