@@ -13,9 +13,78 @@
 - [`RDFminer-core`](https://github.com/Wimmics/RDFminer/tree/main/RDFminer-core) an API to exploit the evolutionary algorithm implemented in Java. The server relies on an implementation of a RESTful web service using the JAX-RS framework.
 - [`RDFminer-front`](https://github.com/Wimmics/RDFminer/tree/main/RDFminer-front) a VueJS application to control the mining process interactively: it enables to parameterize and launch the discovery process, monitor
 its execution, inspect and analyze its results.
-- [`RDFminer-server`](https://github.com/Wimmics/RDFminer/tree/main/RDFminer-front) a server to provide web services. It relies on an Express server for web services and **socket.io** server for websockets transport.
+- [`RDFminer-server`](https://github.com/Wimmics/RDFminer/tree/main/RDFminer-front) a server to provide web services: interaction between `front` and `core`, db, ... It relies on an Express server for web services and **socket.io** server for websockets transport.
 
-# Usage
+# Discovering SHACL shapes  
+
+## Build candidates shapes using BNF grammar
+
+RDFminer builds candidate shapes using BNF grammar writted by the user (in the *Creation form*), it must be compliant with the SHACL W3C recommendation. They are composed of **static** and **dynamic** rules.
+
+Considering the following grammar:
+
+```js
+Shape           := ' a ' NodeShape
+NodeShape       := 'sh:NodeShape ; ' ShapeBody
+ShapeBody       := 'sh:targetClass ' Class ' ; ' ShapeProperty
+ShapeProperty   := 'sh:property [ ' PropertyBody ' ] . '
+PropertyBody    := 'sh:path rdf:type ; sh:hasValue ' Class ' ; '
+Class           := 'SPARQL ?x a ?Class .'
+```
+
+Here, the rule `Class` is *dynamic* and includes the SPARQL keyword for mining all classes from the named RDF data graph. Every classes are associated to this rule:
+
+```js
+// It becomes:
+Class           := '<Class_1>' | '<Class_2>' | ... | '<Class_n>'
+```
+
+Consequently, the rules `ShapeBody` and `PropertyBody` will evolve between each candidates:
+
+```js
+// candidate shape 1
+'a sh:NodeShape ; sh:targetClass <Class_21> ; sh:property [ sh:path rdf:type ; sh:hasValue <Class_4> ] .'
+// candidate shape 2
+'a sh:NodeShape ; sh:targetClass <Class_641> ; sh:property [ sh:path rdf:type ; sh:hasValue <Class_89> ] .'
+// ...
+```
+
+As only two characters evolve, the `ChromosomeSize` value must be **2**
+
+More complex grammar can be designed to build rich shapes:
+
+```js
+Shape := ' a ' NodeShape
+NodeShape := 'sh:NodeShape ; ' ShapeBody
+ShapeBody := ClassTarget | SubjectsOfTarget | ObjectsOfTarget
+ClassTarget := 'sh:targetClass ' Class ' ; ' ShapeProperty
+SubjectsOfTarget := 'sh:targetSubjectsOf ' Property ' ; ' ShapeProperty
+// Here, we will directly target the objects using ObjectsOfTarget, as a consequence we will specify the ValueTypeConstraintComponent fragment
+ObjectsOfTarget := 'sh:targetObjectsOf ' Property ' ; ' ValueTypeConstraintComponent ' . '
+//---------------------------------------------------------------
+// Value type Constraint Components
+//---
+ShapeProperty := 'sh:property [ ' PropertyBody ' ] . '
+PropertyBody := 'sh:path ' Property ' ; ' ValueTypeConstraintComponent ' ; '
+//
+ValueTypeConstraintComponent := ClassConstraint | DatatypeConstraint | NodeKindConstraint
+// Constraint Component IRI: sh:ClassConstraintComponent
+// The condition specified by sh:class is that each value node is a SHACL instance of a given type.
+ClassConstraint := 'sh:class ' Class
+// Constraint Component IRI: sh:DatatypeConstraintComponent
+// sh:datatype specifies a condition to be satisfied with regards to the datatype of each value node.
+DatatypeConstraint := 'sh:datatype ' DataType
+// Constraint Component IRI: sh:NodeKindConstraintComponent
+// sh:nodeKind specifies a condition to be satisfied by the RDF node kind of each value node.
+NodeKindConstraint := 'sh:nodeKind ' NodeKind
+// It can be: sh:BlankNode, sh:IRI, sh:Literal sh:BlankNodeOrIRI, sh:BlankNodeOrLiteral and sh:IRIOrLiteral
+NodeKind := 'sh:BlankNode' | 'sh:IRI' | 'sh:Literal' | 'sh:BlankNodeOrIRI' | 'sh:BlankNodeOrLiteral' | 'sh:IRIOrLiteral'
+Class := 'SPARQL ?x a ?Class .'
+Property := 'SPARQL ?subj ?Property ?obj . FILTER ( isIRI(?Property) ) .'
+DataType := 'SPARQL { SELECT distinct ?o WHERE { ?s ?p ?o . FILTER ( isLiteral(?o) ) } } BIND( datatype(?o) as ?DataType ) .'
+```
+
+Due to the complexity, we suggest to experiment different value for `ChromosomeSize`: e.g. **20**
 
 # Avalaible datasets
 
