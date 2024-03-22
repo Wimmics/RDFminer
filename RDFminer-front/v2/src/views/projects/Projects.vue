@@ -56,7 +56,7 @@
                 <CAvatar class="clickable" src="assets/garbage.png" @click="deletePopup(project.projectName)" /> -->
                     </CTableDataCell>
                     <CTableDataCell :color="getColor(project.status)" style="font-weight: bold;">
-                        <CSpinner :variant="project.status < 1 ? 'grow' : 'border'" v-if="project.status != 2" size="sm"
+                        <CSpinner :variant="project.status < 1 ? 'grow' : 'border'" v-if="project.status != 2 || project.status != 3" size="sm"
                             style="margin-right:10px;" />{{
         status[project.status].text }}
                     </CTableDataCell>
@@ -89,6 +89,7 @@ export default {
                 case 0:
                     return "light";
                 case 1:
+                case 3:
                     return "warning";
                 case 2:
                     return "success";
@@ -104,7 +105,8 @@ export default {
             status: {
                 0: { text: "Pending...", color: "red" },
                 1: { text: "In progress", color: "orange" },
-                2: { text: "Complete", color: "green" }
+                2: { text: "Complete", color: "green" },
+                3: { text: "Stopped", color: "orange" }
             },
             showDeletePopup: false,
             selectedProject: "",

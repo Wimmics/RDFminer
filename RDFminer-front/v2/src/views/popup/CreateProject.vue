@@ -140,7 +140,7 @@
                                 </CCol>
                                 <CCol sm="7">
                                     <!-- Content -->
-                                    <CFormTextarea style="color: rgb(1, 108, 157)">{{ selectedGrammar }}</CFormTextarea>
+                                    <CFormTextarea style="color: rgb(1, 108, 157)" v-model="selectedGrammar">{{ selectedGrammar }}</CFormTextarea>
                                 </CCol>
                                 <!-- <p>filtered: {{ filteredTemplates.length }} / templates: {{ templates.length }}</p> -->
                             </CRow>
