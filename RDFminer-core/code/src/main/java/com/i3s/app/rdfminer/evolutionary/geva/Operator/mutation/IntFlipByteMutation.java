@@ -55,7 +55,7 @@ public class IntFlipByteMutation extends MutationOperation {
 
     private static final Logger logger = Logger.getLogger(IntFlipByteMutation.class.getName());
 
-    public IntFlipByteMutation() { super(); }
+//    public IntFlipByteMutation() { super(); }
 
     /** Creates a new instance of IntFlipMutation
      * @param prob mutation probability

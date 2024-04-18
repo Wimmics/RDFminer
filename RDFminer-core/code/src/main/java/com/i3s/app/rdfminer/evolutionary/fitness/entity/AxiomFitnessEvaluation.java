@@ -33,8 +33,7 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 //	public List<JSONObject> evaluatedAxioms = new ArrayList<>();
 
 	@Override
-	public ArrayList<Entity> initializePopulation(ArrayList<GEIndividual> individuals) {
-		Parameters parameters = Parameters.getInstance();
+	public ArrayList<Entity> initializePopulation(ArrayList<GEIndividual> individuals, Parameters parameters) {
 		Set<Callable<Entity>> callables = new HashSet<>();
 		ArrayList<Entity> entities = new ArrayList<>();
 		logger.info("The axioms will be intialized using the target SPARQL Endpoint : " + Global.SPARQL_ENDPOINT);
@@ -45,8 +44,7 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 				break;
 			if (individual.isMapped()) {
 				callables.add(() -> {
-					Axiom axiom = AxiomFactory.create(individual, individual.getPhenotype(),
-						new CoreseEndpoint(Global.SPARQL_ENDPOINT, Global.PREFIXES));
+					Axiom axiom = AxiomFactory.create(individual, individual.getPhenotype(), parameters);
 					// compute fitness
 					axiom.computeFitness();
 					return axiom;
@@ -92,12 +90,12 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 		ArrayList<Entity> newPopulation = new ArrayList<>();
 		// manage not evaluated axioms
 		if(parameters.timeCap != 0) {
-			newPopulation.addAll(EATools.getTimeCappedIndividuals(individuals, entities));
+			newPopulation.addAll(EATools.getTimeCappedIndividuals(individuals, entities, parameters));
 		}
 		// Check if Novelty Search is enabled
 		if(parameters.isUseNoveltySearch()) {
 		 	// Compute the similarities of each axiom between them, and update the population
-			NoveltySearch noveltySearch = new NoveltySearch(new CoreseEndpoint(Global.SPARQL_ENDPOINT, Global.PREFIXES));
+			NoveltySearch noveltySearch = new NoveltySearch(new CoreseEndpoint(parameters));
 			try {
 				entities = noveltySearch.update(entities);
 			} catch (URISyntaxException | IOException e) {
@@ -118,15 +116,13 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 	}
 
 	@Override
-	public ArrayList<Entity> updatePopulation(ArrayList<Entity> population) {
-		Parameters parameters = Parameters.getInstance();
+	public ArrayList<Entity> updatePopulation(ArrayList<Entity> population, Parameters parameters) {
 		logger.info("Update the current population using the following RDF data graph: " + parameters.getNamedDataGraph());
 		Set<Callable<Entity>> callables = new HashSet<>();
 		List<Entity> entities = new ArrayList<>();
 		for(Entity entity : population) {
 			callables.add(() -> {
-				Axiom axiom = AxiomFactory.create(entity.individual, entity.individual.getPhenotype(),
-						new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes()));
+				Axiom axiom = AxiomFactory.create(entity.individual, entity.individual.getPhenotype(), parameters);
 				// compute fitness
 				axiom.computeFitness();
 				// the generation in which this axiom was discovered
@@ -191,14 +187,12 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 	}
 
 	@Override
-	public Entity updateIndividual(GEIndividual individual) throws URISyntaxException, IOException {
-		Parameters parameters = Parameters.getInstance();
+	public Entity updateIndividual(GEIndividual individual, Parameters parameters) throws URISyntaxException, IOException {
 		// in a case of new individual, we need to compute it as a new axiom
 		double f;
 		// instance of axiom
 //		if (individual.isMapped()) {
-		Axiom axiom = AxiomFactory.create(individual, individual.getPhenotype(),
-				new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes()));
+		Axiom axiom = AxiomFactory.create(individual, individual.getPhenotype(), parameters);
 		// compute fitness
 		axiom.computeFitness();
 		f = axiom.individual.getFitness().getDouble();

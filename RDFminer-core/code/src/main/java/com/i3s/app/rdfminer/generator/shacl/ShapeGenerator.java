@@ -29,12 +29,11 @@ public abstract class ShapeGenerator extends Generator {
 
     /**
      * Constructs a new SHACL Shape generator for the language described by the given grammar.
-     * @param fileName the name of the file containing the grammar.
      * @throws URISyntaxException Error concerning the syntax of the given URL
      * @throws IOException Error concerning the execution of the GET request
      */
-    ShapeGenerator(String fileName) throws URISyntaxException, IOException {
-        super(fileName);
+    ShapeGenerator(Parameters parameters) throws URISyntaxException, IOException {
+        super(parameters);
         // set shapes generator status to true
         generateShapes = true;
         logger.info("Grammar loaded. Adding dynamic productions...");
@@ -68,7 +67,6 @@ public abstract class ShapeGenerator extends Generator {
 
     @Override
     protected void generateProductions(String symbol, String sparql) throws URISyntaxException, IOException {
-        Parameters parameters = Parameters.getInstance();
         Rule rule = grammar.findRule(symbol);
         if (rule == null) {
             rule = new Rule();
@@ -97,7 +95,7 @@ public abstract class ShapeGenerator extends Generator {
         } catch (IOException ioe) {
             logger.info("Cache for " + symbol + " not found. Querying SPARQL endpoint");
             logger.info("Querying SPARQL endpoint for symbol <" + symbol + "> ...");
-            CoreseEndpoint endpoint = new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes());
+            CoreseEndpoint endpoint = new CoreseEndpoint(this.getParameters());
             List<String> results = endpoint.select("?" + symbol, sparql, true);
             if(results.size() > 0) {
                 PrintStream cache = null;

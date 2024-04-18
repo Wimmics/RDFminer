@@ -22,18 +22,17 @@ public class ShapeFitnessEvaluation implements FitnessEvaluation {
     private static final Logger logger = Logger.getLogger(ShapeFitnessEvaluation.class.getName());
 
     @Override
-    public ArrayList<Entity> initializePopulation(ArrayList<GEIndividual> individuals) {
-        Parameters parameters = Parameters.getInstance();
+    public ArrayList<Entity> initializePopulation(ArrayList<GEIndividual> individuals, Parameters parameters) {
         // evaluation of SHACL Shapes
         try {
 //            ShapesManager shapesManager = new ShapesManager(individuals);
             logger.info(individuals.size() + " SHACL Shapes ready to be evaluated !");
             // launch evaluation
-            CoreseEndpoint endpoint = new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes());
+            CoreseEndpoint endpoint = new CoreseEndpoint(parameters);
             // For each SHACL Shapes individuals, we instanciate SHACL shape
             ArrayList<Entity> newPopulation = new ArrayList<>();
             for(GEIndividual individual : individuals) {
-                newPopulation.add(new Shape(individual, endpoint));
+                newPopulation.add(new Shape(individual, endpoint, parameters));
             }
             logger.info("Done");
             // return new population
@@ -50,19 +49,18 @@ public class ShapeFitnessEvaluation implements FitnessEvaluation {
         return null;
     }
 
-    public ArrayList<Entity> updatePopulation(ArrayList<Entity> population) {
-        Parameters parameters = Parameters.getInstance();
+    public ArrayList<Entity> updatePopulation(ArrayList<Entity> population, Parameters parameters) {
         // evaluation of SHACL Shapes
         try {
             logger.info(population.size() + " distinct SHACL Shapes ready to be evaluated !");
             // set endpoint
-            CoreseEndpoint endpoint = new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes());
+            CoreseEndpoint endpoint = new CoreseEndpoint(parameters);
             // For each SHACL Shapes individuals, we set all results of them
             ArrayList<Entity> newPop = new ArrayList<>();
             // iterate on entities
             for(Entity entity : population) {
                 // add into newPop
-                newPop.add(new Shape(entity.individual, endpoint));
+                newPop.add(new Shape(entity.individual, endpoint, parameters));
             }
             // write validation report in file
 //            FileWriter fw = new FileWriter(RDFminer.outputFolder + Global.SHACL_VALIDATION_REPORT_FILENAME);
@@ -84,12 +82,11 @@ public class ShapeFitnessEvaluation implements FitnessEvaluation {
      * Not used in this context
      */
     @Override
-    public Entity updateIndividual(GEIndividual individual) {
-        Parameters parameters = Parameters.getInstance();
+    public Entity updateIndividual(GEIndividual individual, Parameters parameters) {
         // evaluation of SHACL Shapes
         try {
-            CoreseEndpoint endpoint = new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes());
-            return new Shape(individual, endpoint);
+            CoreseEndpoint endpoint = new CoreseEndpoint(parameters);
+            return new Shape(individual, endpoint, parameters);
         } catch (IOException e) {
             logger.error("I/O exceptions while evaluating SHACL Shapes ...");
             logger.error(e.getMessage());

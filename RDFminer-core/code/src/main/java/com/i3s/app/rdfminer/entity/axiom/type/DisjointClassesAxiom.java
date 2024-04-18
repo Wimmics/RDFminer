@@ -3,6 +3,7 @@
  */
 package com.i3s.app.rdfminer.entity.axiom.type;
 
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.entity.axiom.Axiom;
 import com.i3s.app.rdfminer.evolutionary.geva.Mapper.Symbol;
 import com.i3s.app.rdfminer.expression.Expression;
@@ -43,8 +44,8 @@ public class DisjointClassesAxiom extends Axiom {
 	 * @param arguments   the functional-style expression of the subclass
 	 * @param endpoint the functional-style expression of the superclass
 	 */
-	public DisjointClassesAxiom(List<List<Symbol>> arguments, CoreseEndpoint endpoint) throws URISyntaxException, IOException {
-		super();
+	public DisjointClassesAxiom(List<List<Symbol>> arguments, CoreseEndpoint endpoint, Parameters parameters) throws URISyntaxException, IOException {
+		super(parameters);
 		long t0 = getProcessCPUTime();
 		disjointClass = new Expression[arguments.size()];
 		disjointClassComplement = new Expression[disjointClass.length];

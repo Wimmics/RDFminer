@@ -1,15 +1,21 @@
 package com.i3s.app.rdfminer.evolutionary.stopCriterion;
 
-import com.i3s.app.rdfminer.Parameters;
-
 public class EffortStop implements StopCriterion {
 
-    public int curGeneration;
+    private int curGeneration;
+
+    private final int popSize;
+
+    private final int effort;
+
+    public EffortStop(int popSize, int effort) {
+        this.popSize = popSize;
+        this.effort = effort;
+    }
 
     @Override
     public boolean isFinish() {
-        Parameters parameters = Parameters.getInstance();
-        return parameters.getPopulationSize() * this.curGeneration >= parameters.getEffort();
+        return this.popSize * this.curGeneration >= this.effort;
     }
 
     @Override

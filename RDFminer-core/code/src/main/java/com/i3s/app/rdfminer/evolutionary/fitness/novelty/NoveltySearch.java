@@ -1,6 +1,5 @@
 package com.i3s.app.rdfminer.evolutionary.fitness.novelty;
 
-import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.RDFminer;
 import com.i3s.app.rdfminer.entity.Entity;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.FitnessPackage.BasicFitness;
@@ -92,10 +91,9 @@ public class NoveltySearch {
      * @return the value of based novelty fitness <var>f</var>(&phi)
      */
     public double updateFitness(Entity phi) {
-        Parameters parameters = Parameters.getInstance();
-        if (!parameters.isUseNoveltySearch()) {
-            return phi.individual.getFitness().getDouble();
-        }
+//        if (!parameters.isUseNoveltySearch()) {
+//            return phi.individual.getFitness().getDouble();
+//        }
 //        logger.debug(phi.individual.getGenotype() + ": sum(sim)= " + );
         double sumSim = 0;
         for(double sim : phi.similarities) {

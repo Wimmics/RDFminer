@@ -32,20 +32,18 @@ public abstract class AxiomGenerator extends Generator {
 	/**
 	 * Constructs a new axiom generator with no grammar attached.
 	 */
-	public AxiomGenerator() {
-		super(null);
+	public AxiomGenerator(Parameters parameters) {
+		super(parameters);
 	}
 
 	/**
 	 * Constructs a new axiom generator for the language described by the given
 	 * grammar.
-	 * 
-	 * @param fileName the name of the file containing the grammar.
 	 * @param v2       if true, we used the second version (minimized) for the
 	 *                 extraction of rules, else the first
 	 */
-	public AxiomGenerator(String fileName, boolean v2) throws URISyntaxException, IOException {
-		super(fileName);
+	public AxiomGenerator(Parameters parameters, boolean v2) throws URISyntaxException, IOException {
+		super(parameters);
 		// set axioms generator status to true
 		generateAxioms = true;
 		logger.info("Grammar loaded. Adding dynamic productions...");
@@ -117,7 +115,6 @@ public abstract class AxiomGenerator extends Generator {
 
 	@Override
 	protected void generateProductions(String symbol, String sparql) throws URISyntaxException, IOException {
-		Parameters parameters = Parameters.getInstance();
 		Rule rule = grammar.findRule(symbol);
 		if (rule == null) {
 			rule = new Rule();
@@ -146,7 +143,7 @@ public abstract class AxiomGenerator extends Generator {
 		} catch (IOException ioe) {
 //			logger.info("Cache for " + symbol + " not found. Querying SPARQL endpoint: " + Global.TRAINING_SPARQL_ENDPOINT);
 //			logger.info("Querying SPARQL endpoint for symbol <" + symbol + "> ...");
-			CoreseEndpoint endpoint = new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes());
+			CoreseEndpoint endpoint = new CoreseEndpoint(this.getParameters());
 			PrintStream cache = null;
 			try {
 				cache = new PrintStream(this.getCachesPath());

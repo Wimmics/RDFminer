@@ -3,6 +3,7 @@
  */
 package com.i3s.app.rdfminer.entity.axiom;
 
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.entity.Entity;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.FitnessPackage.BasicFitness;
 
@@ -27,6 +28,10 @@ public abstract class Axiom extends Entity {
 	 * <code>subClassOf</code>; <code>DisjointClasses</code>; ...
 	 */
 	public int numIntersectingClasses = 0;
+
+	public Axiom(Parameters parameters) {
+		super(parameters);
+	}
 
 	/**
 	 * Define an ARI of the current axiom

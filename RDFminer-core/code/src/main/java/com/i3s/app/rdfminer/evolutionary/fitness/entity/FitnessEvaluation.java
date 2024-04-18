@@ -1,5 +1,6 @@
 package com.i3s.app.rdfminer.evolutionary.fitness.entity;
 
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.entity.Entity;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEIndividual;
 
@@ -18,19 +19,19 @@ public interface FitnessEvaluation {
      * @param individuals	a given list of individuals
      * @return 				a list of assessed entities
      */
-    public ArrayList<Entity> initializePopulation(ArrayList<GEIndividual> individuals);
+    public ArrayList<Entity> initializePopulation(ArrayList<GEIndividual> individuals, Parameters parameters);
 
     /**
      * Update a given population by using evaluation of each entity
      * @param population       a given population
      */
-    public ArrayList<Entity> updatePopulation(ArrayList<Entity> population);
+    public ArrayList<Entity> updatePopulation(ArrayList<Entity> population, Parameters parameters);
 
     /**
      * Update a given entity by using evaluation (possibility, fitness, ...)
      * @param individual a given individual
      * @return the evaluated entity
      */
-    public Entity updateIndividual(GEIndividual individual) throws URISyntaxException, IOException;
+    public Entity updateIndividual(GEIndividual individual, Parameters parameters) throws URISyntaxException, IOException;
 
 }

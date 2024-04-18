@@ -3,7 +3,6 @@
  */
 package com.i3s.app.rdfminer.generator.axiom;
 
-import com.i3s.app.rdfminer.Global;
 import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.Phenotype;
 import com.i3s.app.rdfminer.evolutionary.geva.Mapper.Production;
@@ -46,8 +45,6 @@ public class CandidateAxiomGenerator extends AxiomGenerator {
 
 	private static final Logger logger = Logger.getLogger(CandidateAxiomGenerator.class.getName());
 
-	Parameters parameters = Parameters.getInstance();
-
 	/**
 	 * An iterator on the classes to be used as the sub-class of the candidate
 	 * axiom.
@@ -81,16 +78,16 @@ public class CandidateAxiomGenerator extends AxiomGenerator {
 	 * </p>
 	 */
 	protected final String statusFileName = "AxiomGenerator-"
-			+ (parameters.getSparqlTimeOut() > 0 ? "-" + parameters.getSparqlTimeOut() : "") + ".status";
+			+ (this.getParameters().getSparqlTimeOut() > 0 ? "-" + this.getParameters().getSparqlTimeOut() : "") + ".status";
 
 	/**
 	 * Constructs a new axiom generator for the language described by the given
 	 * grammar.
 	 * 
-	 * @param fileName the name of the file containing the grammar.
+	 * @param parameters
 	 */
-	public CandidateAxiomGenerator(String fileName, boolean v2) throws URISyntaxException, IOException {
-		super(fileName, v2);
+	public CandidateAxiomGenerator(Parameters parameters, boolean v2) throws URISyntaxException, IOException {
+		super(parameters, v2);
 		logger.warn("Grammar Successfully Initialized");
 
 		Rule rule = grammar.findRule("Class");
@@ -147,7 +144,7 @@ public class CandidateAxiomGenerator extends AxiomGenerator {
 	 */
 	protected Set<String> getNodes(String sparql) throws URISyntaxException, IOException {
 		logger.warn("Querying DBpedia with query " + sparql);
-		CoreseEndpoint endpoint = new CoreseEndpoint(Global.SPARQL_ENDPOINT, Global.PREFIXES);
+		CoreseEndpoint endpoint = new CoreseEndpoint(this.getParameters());
 		List<String> results = endpoint.select("?class", sparql, false);
 		return new TreeSet<>(results);
 	}

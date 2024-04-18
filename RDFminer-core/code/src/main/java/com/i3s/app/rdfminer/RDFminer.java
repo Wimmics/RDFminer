@@ -38,10 +38,13 @@ public class RDFminer {
 	// Novelty search
 	public static SimilarityMap similarityMap = null;
 
-	private Parameters parameters;
+	private final Parameters parameters;
 
-	public RDFminer() {
-		this.parameters = Parameters.getInstance();
+	private Results results;
+
+	public RDFminer(Parameters parameters, Results results) {
+		this.parameters = parameters;
+		this.results = results;
 	}
 
 	/**
@@ -54,31 +57,25 @@ public class RDFminer {
 		configureFileLogger();
 		// Print the banner of RDFminer
 		logRDFminerBanner();
-		// compute the number of triples published on the considered SPARQL endpoint
-		// usefull to compute 'one time' the number of triples (because it is redundant and can be very long ...)
-		// use it to provide it to Corese and compute the generality for each shape
-//		CoreseEndpoint endpoint = new CoreseEndpoint(Global.SPARQL_ENDPOINT, Global.PREFIXES);
-//		logger.info("COUNT the total number of triples available through the SPARQL endpoint: " + Global.SPARQL_ENDPOINT);
-//		Global.nTriples = endpoint.count("*", "?s ?p ?o");
-//		logger.info("COUNT #RDF triples: " + Global.nTriples);
+		//
 		Generator generator;
 		GrammaticalEvolution evolution;
 		Evaluator evaluator;
 		// Launching the appropriate feature according to the parameters
-		switch (this.parameters.getMod()) {
+		switch (parameters.getMod()) {
 			// Shape Mining
 			// require SHACL shapes generator to build well-formed candidates
 			// grammatical evolution will be used
 			case Mod.SHAPE_MINING:
 				// count the total number of RDF triples in the graph
 				// use the result for each prob. shacl validation
-				CoreseEndpoint endpoint = new CoreseEndpoint(this.parameters.getNamedDataGraph(), this.parameters.getPrefixes());
+				CoreseEndpoint endpoint = new CoreseEndpoint(this.parameters);
 				Global.nTriples = endpoint.count("*", "?s ?p ?o", false);
 				// init generator with BNF grammar provided by user
-				generator = new RandomShapeGenerator(this.parameters.getGrammar());
-				evolution = new GrammaticalEvolution();
+				generator = new RandomShapeGenerator(this.parameters);
+				evolution = new GrammaticalEvolution(generator, this.results);
 				try {
-					evolution.run(generator);
+					evolution.run();
 				} catch (Exception e) {
 					logger.error("error during the GE process ...");
 					logger.error(e.getMessage());
@@ -90,10 +87,10 @@ public class RDFminer {
 			// grammatical evolution will be used
 			case Mod.AXIOM_MINING:
 				// init generator with BNF grammar provided by user
-				generator = new RandomAxiomGenerator(this.parameters.getGrammar(), true);
-				evolution = new GrammaticalEvolution();
+				generator = new RandomAxiomGenerator(this.parameters, true);
+				evolution = new GrammaticalEvolution(generator, this.results);
 				try {
-					evolution.run(generator);
+					evolution.run();
 				} catch (Exception e) {
 					logger.error("error during the GE process ...");
 					logger.error(e.getMessage());
@@ -103,14 +100,10 @@ public class RDFminer {
 			// OWL axioms or SHACL shapes assessment
 			// The system can assess (1) SubClassOf and DisjointClass oxioms and (2) SHACL shapes
 			case Mod.AXIOM_ASSESSMENT:
-				// launch evaluator
-				evaluator = new Evaluator();
-				evaluator.run(this.parameters.getMod());
-				break;
 			case Mod.SHAPE_ASSESSMENT:
 				// launch evaluator
-				evaluator = new Evaluator();
-				evaluator.run(this.parameters.getMod());
+				evaluator = new Evaluator(this.parameters, this.results);
+				evaluator.run();
 				break;
 			default:
 				logger.error("This mod is not recognized ! provided mod code: " + this.parameters.getMod());
@@ -119,8 +112,7 @@ public class RDFminer {
 	}
 
 	private void configureFileLogger() {
-		Results results = Results.getInstance();
-		String filePath = Global.LOGS + results.getLogs();
+		String filePath = Global.LOGS + this.results.getLogs();
 		// set properties
 		Properties props = new Properties();
 		props.put("log4j.rootLogger", "INFO, A1");
@@ -142,4 +134,7 @@ public class RDFminer {
 		logger.info("This is RDFminer v." + Global.VERSION + " !");
 	}
 
+	public Parameters getUsedParameters() {
+		return parameters;
+	}
 }

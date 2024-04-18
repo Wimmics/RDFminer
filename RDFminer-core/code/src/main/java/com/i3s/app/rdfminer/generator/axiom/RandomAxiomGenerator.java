@@ -4,6 +4,7 @@
 
 package com.i3s.app.rdfminer.generator.axiom;
 
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEChromosome;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.Phenotype;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.MersenneTwisterFast;
@@ -35,10 +36,10 @@ public class RandomAxiomGenerator extends AxiomGenerator {
 	 * Constructs a new axiom generator for the language described by the given
 	 * grammar.
 	 * 
-	 * @param fileName the name of the file containing the grammar.
+	 * @param parameters
 	 */
-	public RandomAxiomGenerator(String fileName, boolean v2) throws URISyntaxException, IOException {
-		super(fileName, v2);
+	public RandomAxiomGenerator(Parameters parameters, boolean v2) throws URISyntaxException, IOException {
+		super(parameters, v2);
 		// Set up a pseudo-random number generator
 		random = new MersenneTwisterFast(System.currentTimeMillis());
 	}

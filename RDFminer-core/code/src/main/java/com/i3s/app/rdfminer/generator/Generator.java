@@ -46,23 +46,24 @@ public abstract class Generator {
 
     private String cachesPath;
 
+    private Parameters parameters;
+
     /**
      * Load a given file path as a grammar to follow for our future rules
-     *
-     * @param filePath the path of grammar file
+     * @param parameters
      */
-    public Generator(String filePath) {
-        Parameters parameters = Parameters.getInstance();
+    public Generator(Parameters parameters) {
+        this.parameters = parameters;
         // Set up the grammar to be used for generating the axioms:
-        if (filePath == null) {
+        if (this.parameters.getGrammar() == null) {
             grammar = null;
         } else {
-            grammar = new DLGEGrammar(filePath);
+            grammar = new DLGEGrammar(this.parameters.getGrammar());
             grammar.setDerivationTreeType(DerivationTree.class.getName());
             // grammar.setDerivationTreeType(ContextualDerivationTree.class.getName());
             grammar.setMaxDerivationTreeDepth(Integer.MAX_VALUE);
             // set max wrapp
-            grammar.setMaxWraps(parameters.getMaxWrap());
+            grammar.setMaxWraps(this.parameters.getMaxWrap());
         }
     }
 
@@ -129,8 +130,7 @@ public abstract class Generator {
      * Generate a cache file name from a SPARQL query, so that each file has a different name.
      */
     public void setCachesPath(String symbol, String sparql) {
-        Parameters parameters = Parameters.getInstance();
-        String root = Global.CACHES + parameters.getNamedDataGraph().hashCode();
+        String root = Global.CACHES + this.parameters.getNamedDataGraph().hashCode();
         // create cache directory if not exists for this RDF data graph
         try {
             Files.createDirectory(Paths.get(root));
@@ -141,5 +141,7 @@ public abstract class Generator {
     public String getCachesPath() {
         return cachesPath;
     }
+
+    public Parameters getParameters() { return parameters; }
 
 }

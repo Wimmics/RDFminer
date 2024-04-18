@@ -24,6 +24,12 @@ import java.util.stream.Collectors;
  */
 public class Entity {
 
+    private final Parameters parameters;
+
+    public Entity(Parameters parameters) {
+        this.parameters = parameters;
+    }
+
     public String entityAsString;
 
     /**
@@ -207,7 +213,6 @@ public class Entity {
     }
 
     public JSONObject toJSON() {
-        Parameters parameters = Parameters.getInstance();
         JSONObject json = new JSONObject();
         if(this.individual != null) {
             json.put("phenotype", this.individual.getPhenotype().getStringNoSpace());
@@ -226,7 +231,7 @@ public class Entity {
         json.put("elapsedTime", this.elapsedTime);
 //        if (RDFMiner.parameters.useClassicShaclMode) {
 //            json.put("likelihood", this.likelihood.doubleValue());
-        if (parameters.getMod() == Mod.SHAPE_ASSESSMENT || parameters.getMod() == Mod.SHAPE_MINING) {
+        if (this.parameters.getMod() == Mod.SHAPE_ASSESSMENT || this.parameters.getMod() == Mod.SHAPE_MINING) {
             json.put("generality", this.generality);
             json.put("likelihood", this.likelihood.doubleValue());
             json.put("pValue", this.pValue.doubleValue());
@@ -243,5 +248,7 @@ public class Entity {
     public void setIndividual(GEIndividual individual) {
         this.individual = individual;
     }
+
+    public Parameters getParameters() { return this.parameters; }
 
 }

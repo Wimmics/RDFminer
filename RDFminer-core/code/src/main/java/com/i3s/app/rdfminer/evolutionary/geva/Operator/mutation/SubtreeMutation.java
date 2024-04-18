@@ -61,7 +61,7 @@ public class SubtreeMutation extends MutationOperation {
     private CreationOperation creationOperation;
     protected Initialiser initialiser;
 
-    public SubtreeMutation() { super(); }
+//    public SubtreeMutation() { super(); }
 
     public SubtreeMutation(RandomNumberGenerator rng, Properties p) {
         super(rng, p);

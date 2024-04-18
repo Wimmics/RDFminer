@@ -3,7 +3,6 @@
  */
 package com.i3s.app.rdfminer;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(value = { "_id", "__v", "status"})
 public class Parameters {
 
-	private static Parameters instance = null;
+//	private static Parameters instance = null;
 
 	private Parameters() {}
 
@@ -103,10 +102,10 @@ public class Parameters {
 	private String resultsID;
 
 	/**
-	 * The timeout used for SPARQL queries <i>(default value: 600,000 ms)</i>
+	 * The timeout used for SPARQL queries <i>(default value: 30,000 ms)</i>
 	 */
 	@JsonProperty("sparqlTimeOut")
-	private long sparqlTimeOut = 600000;
+	private long sparqlTimeOut = 30000;
 
 	// @TODO: map it on json input when the implementation is finished
 	private boolean useNoveltySearch = false;
@@ -223,12 +222,12 @@ public class Parameters {
 		return useNoveltySearch;
 	}
 
-	@JsonCreator
-	public static synchronized Parameters getInstance() {
-		if(instance == null) {
-			instance = new Parameters();
-		}
-		return instance;
-	}
+//	@JsonCreator
+//	public static synchronized Parameters getInstance() {
+//		if(instance == null) {
+//			instance = new Parameters();
+//		}
+//		return instance;
+//	}
 
 }

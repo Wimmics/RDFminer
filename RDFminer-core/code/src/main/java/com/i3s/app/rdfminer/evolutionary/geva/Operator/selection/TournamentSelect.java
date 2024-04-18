@@ -29,13 +29,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.i3s.app.rdfminer.evolutionary.geva.Operator.selection;
 
-import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Exceptions.BadParameterException;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.FitnessPackage.Fitness;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEIndividual;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.Individual;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Constants;
-import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.MersenneTwisterFast;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.RandomNumberGenerator;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.Stochastic;
 import org.apache.log4j.Logger;
@@ -85,14 +83,12 @@ public class TournamentSelect extends SelectionOperation implements Stochastic {
     /**
      * New instantion
      */
-    public TournamentSelect() {
-        super();
-        Parameters parameters = Parameters.getInstance();
-        this.size = (int) (parameters.getSelectionRate() * parameters.getPopulationSize());
-        this.rng = new MersenneTwisterFast();
-        this.tournamentSize = (int) (parameters.getTournamentSelectionRate() * parameters.getPopulationSize());
-        tour = new ArrayList<>(this.tournamentSize);
-    }
+//    public TournamentSelect(int size, RandomNumberGenerator rng) {
+//        super(size);
+//        this.rng = rng;
+//        this.tournamentSize = (int) (parameters.getTournamentSelectionRate() * parameters.getPopulationSize());
+//        tour = new ArrayList<>(this.tournamentSize);
+//    }
     
     public void setProperties(Properties p) {
         super.setProperties(p);

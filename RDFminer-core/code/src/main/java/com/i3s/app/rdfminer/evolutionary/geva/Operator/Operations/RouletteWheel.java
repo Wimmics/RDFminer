@@ -34,7 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.i3s.app.rdfminer.evolutionary.geva.Operator.Operations;
 
-import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEIndividual;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.Individual;
 import com.i3s.app.rdfminer.evolutionary.geva.Operator.selection.SelectionOperation;
@@ -71,8 +70,8 @@ public abstract class RouletteWheel extends SelectionOperation implements Stocha
      */
     public RouletteWheel() {
         super();
-        Parameters parameters = Parameters.getInstance();
-        this.size = (int) (parameters.getSelectionRate() * parameters.getPopulationSize());
+//        Parameters parameters = Parameters.getInstance();
+//        this.size = (int) (parameters.getSelectionRate() * parameters.getPopulationSize());
         this.rng = new MersenneTwisterFast();
     }
 

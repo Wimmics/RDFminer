@@ -33,7 +33,7 @@ public class RDFminerAPI {
 //        new ObjectMapper().updateValue(parameters, params);
         MyLogger.info("project: " + parameters.getProjectName() + " is launched by " + parameters.getUserID());
         // instanciate results
-        Results results = Results.getInstance();
+        Results results = new Results();
         results.set_id(parameters.getResultsID());
         results.setLogs();
         results.resetLists();
@@ -41,7 +41,7 @@ public class RDFminerAPI {
         RDFminerProcess processes = RDFminerProcess.getInstance();
         Thread task = new Thread(() -> {
             // starting RDFminer
-            RDFminer rdfMiner = new RDFminer();
+            RDFminer rdfMiner = new RDFminer(parameters, results);
             try {
                 rdfMiner.exec();
             } catch (InterruptedException e) {
@@ -68,12 +68,10 @@ public class RDFminerAPI {
     @Path("stop")
     public Response stop(@QueryParam("projectName") String projectName) {
         RDFminerProcess processes = RDFminerProcess.getInstance();
-        // return the instance of current results
-        Results results = Results.getInstance();
         // kill process
         if (processes.killProcess(projectName)) {
             MyLogger.info("project: " + projectName + " has been stopped ...");
-            return Response.ok(results.toJSON().toString(2)).build();
+            return Response.ok().build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("No RDFminer execution to stop ...").build();
     }

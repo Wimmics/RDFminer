@@ -18,10 +18,10 @@ public class Fitness {
     public static ArrayList<Entity> initializePopulation(ArrayList<GEIndividual> individuals, Generator generator) {
         if(generator.generateAxioms) {
             AxiomFitnessEvaluation fit = new AxiomFitnessEvaluation();
-            return fit.initializePopulation(individuals);
+            return fit.initializePopulation(individuals, generator.getParameters());
         } else if(generator.generateShapes) {
             ShapeFitnessEvaluation fit = new ShapeFitnessEvaluation();
-            return fit.initializePopulation(individuals);
+            return fit.initializePopulation(individuals, generator.getParameters());
         } else {
             logger.warn("Cannot initialize population !");
             System.exit(1);
@@ -32,10 +32,10 @@ public class Fitness {
     public static ArrayList<Entity> computePopulation(ArrayList<Entity> population, Generator generator) {
         if(generator.generateAxioms) {
             AxiomFitnessEvaluation fit = new AxiomFitnessEvaluation();
-            return fit.updatePopulation(population);
+            return fit.updatePopulation(population, generator.getParameters());
         } else if(generator.generateShapes) {
             ShapeFitnessEvaluation fit = new ShapeFitnessEvaluation();
-            return fit.updatePopulation(population);
+            return fit.updatePopulation(population, generator.getParameters());
         } else {
             logger.warn("Cannot compute fitness !");
             System.exit(1);
@@ -44,13 +44,13 @@ public class Fitness {
     }
 
     public static Entity computeEntity(GEIndividual individual, Generator generator) throws URISyntaxException, IOException {
-        logger.debug("eval. fitness of individual: " + individual.getPhenotype().getStringNoSpace());
+//        logger.debug("eval. fitness of individual: " + individual.getPhenotype().getStringNoSpace());
         if(generator.generateAxioms) {
             AxiomFitnessEvaluation fit = new AxiomFitnessEvaluation();
-            return fit.updateIndividual(individual);
+            return fit.updateIndividual(individual, generator.getParameters());
         } else if(generator.generateShapes) {
             ShapeFitnessEvaluation fit = new ShapeFitnessEvaluation();
-            return fit.updateIndividual(individual);
+            return fit.updateIndividual(individual, generator.getParameters());
         } else {
             logger.warn("Cannot compute fitness !");
             System.exit(1);

@@ -56,7 +56,7 @@ public class SubtreeCrossover extends CrossoverOperation {
 
     private static final Logger logger = Logger.getLogger(SubtreeCrossover.class.getName());
 
-    public SubtreeCrossover() { super(); }
+//    public SubtreeCrossover() { super(); }
 
     public SubtreeCrossover(RandomNumberGenerator rng, Properties p) {
         super(rng, p);

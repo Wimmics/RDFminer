@@ -49,7 +49,7 @@ public class NodalMutation extends MutationOperation {
 
     private static final Logger logger = Logger.getLogger(NodalMutation.class.getName());
 
-    public NodalMutation() { super(); }
+//    public NodalMutation() { super(); }
 
     public NodalMutation(RandomNumberGenerator rng, Properties p) {
         super(rng, p);

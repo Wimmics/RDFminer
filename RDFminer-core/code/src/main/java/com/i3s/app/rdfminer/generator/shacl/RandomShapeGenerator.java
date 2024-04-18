@@ -1,5 +1,6 @@
 package com.i3s.app.rdfminer.generator.shacl;
 
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.MersenneTwisterFast;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.RandomNumberGenerator;
 
@@ -20,12 +21,11 @@ public class RandomShapeGenerator extends ShapeGenerator {
     /**
      * Constructs a new SHACL Shape generator for the language described by the given grammar.
      *
-     * @param fileName the name of the file containing the grammar.
      * @throws URISyntaxException Error concerning the syntax of the given URL
      * @throws IOException        Error concerning the execution of the GET request
      */
-    public RandomShapeGenerator(String fileName) throws URISyntaxException, IOException {
-        super(fileName);
+    public RandomShapeGenerator(Parameters parameters) throws URISyntaxException, IOException {
+        super(parameters);
         // Set up a pseudo-random number generator
         random = new MersenneTwisterFast(System.currentTimeMillis());
     }

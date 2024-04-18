@@ -15,7 +15,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
@@ -31,27 +30,36 @@ public class EntityMining {
 
     private static final Logger logger = Logger.getLogger(EntityMining.class.getName());
 
+    private Parameters parameters;
+
+    private Results results;
+
+    public EntityMining(Parameters parameters, Results results) {
+        this.parameters = parameters;
+        this.results = results;
+    }
+
     public ArrayList<Entity> iterate(Generator generator, ArrayList<Entity> entities, int curGeneration) {
-        Parameters parameters = Parameters.getInstance();
+        EAOperators operators = new EAOperators(this.parameters);
         // A list of individuals (from entities list)
         ArrayList<GEIndividual> entitiesI = new ArrayList<>();
         // Use list of individuals instead of list of entities
         // i.e. apply GE process directly on individuals
         for(Entity entity : entities) {
             entitiesI.add(entity.individual);
+            logger.info("~~~ gen: " + entity.individual.getGenotype().toString() + " / phen: " + entity.individual.getPhenotype().getStringNoSpace());
         }
         // Elites population
         logger.info("Searching the best individuals...");
-        ArrayList<GEIndividual> elites = EAOperators.getElitesFromPopulation(entitiesI);
+        ArrayList<GEIndividual> elites = operators.getElitesFromPopulation(entitiesI);
         for(GEIndividual elite : elites) {
             logger.debug("#elite: " + elite.getGenotype().get(0) + " ~ " + elite.getPhenotype().getStringNoSpace() + " ~ Fit= " + elite.getFitness().getDouble());
         }
         // Selected population (for replacement)
         logger.info("Selection of individuals...");
-        EAOperators operators = new EAOperators();
         ArrayList<GEIndividual> selected = operators.getSelectionFromPopulation(entitiesI);
         // replacement phasis
-        Recombination recombination = new Recombination();
+        Recombination recombination = new Recombination(this.parameters);
         ArrayList<GEIndividual> replacement = recombination.perform(generator, elites, selected);
         // Assessment phasis:
         // bind individuals and define fitness value for new individuals
@@ -79,10 +87,10 @@ public class EntityMining {
         // fill the evaluated individuals
         for (Future<Entity> future : futureEntities) {
             try {
-                if(parameters.timeCap != 0) {
+                if(this.parameters.timeCap != 0) {
                     // we multiply the timecap by 2 to consider the maximum
                     // time-cap assessment for 2 childs
-                    newPopulation.add(future.get(parameters.timeCap, TimeUnit.MINUTES));
+                    newPopulation.add(future.get(this.parameters.timeCap, TimeUnit.MINUTES));
                 } else {
                     newPopulation.add(future.get());
                 }
@@ -109,21 +117,20 @@ public class EntityMining {
     }
 
     private void updateResults(ArrayList<Entity> originalPopulation, ArrayList<Entity> newPopulation, int curGeneration) {
-        Results results = Results.getInstance();
         Generation generation = new Generation(originalPopulation, newPopulation, curGeneration);
-        results.addGeneration(generation);
-        results.setEntities(newPopulation);
+        this.results.addGeneration(generation);
+        this.results.setEntities(newPopulation);
         // Log usefull stats concerning the algorithm evolution
         logGenerationInfo(generation);
         // send generations to the server
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             // PUT request
             HttpPut put = new HttpPut(Endpoint.API_RESULTS);
-            put.setEntity(new StringEntity(results.toJSON().toString(), ContentType.APPLICATION_JSON));
+            put.setEntity(new StringEntity(this.results.toJSON().toString(), ContentType.APPLICATION_JSON));
             logger.info("/PUT - update results ...");
             HttpResponse response = httpClient.execute(put);
             logger.info("Status code: " + response.getStatusLine().getStatusCode());
-            logger.info(new BasicResponseHandler().handleResponse(response));
+//            logger.info(new BasicResponseHandler().handleResponse(response));
         } catch (IOException e) {
             logger.warn("RDFminer-server is offline !");
         }

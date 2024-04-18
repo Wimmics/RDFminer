@@ -14,6 +14,12 @@ public class Recombination {
 
     private static final Logger logger = Logger.getLogger(Recombination.class.getName());
 
+    private Parameters parameters;
+
+    public Recombination(Parameters parameters) {
+        this.parameters = parameters;
+    }
+
     /**
      * To compute all tasks about crossover, mutation and evaluation phasis of
      * evolutionary algorithm
@@ -21,15 +27,14 @@ public class Recombination {
      */
     public ArrayList<GEIndividual> perform(Generator generator, ArrayList<GEIndividual> elites,
                                                   ArrayList<GEIndividual> selectedIndividuals) {
-        Parameters parameters = Parameters.getInstance();
         ArrayList<GEIndividual> replacement = new ArrayList<>();
 //        System.out.println(newPopulation.size());
 //        int phasis = 0;
         // reset nPhasis before starting a new one !
         GrammaticalEvolution.nRecombinaison = 0;
         // while the new population size is not equals to the target
-        int target = parameters.getPopulationSize() - elites.size();
-        EAOperators operators = new EAOperators();
+        int target = this.parameters.getPopulationSize() - elites.size();
+        EAOperators operators = new EAOperators(this.parameters);
         while (replacement.size() != target)  {
             // operate crossover and mutation: 2 by 2
             ArrayList<GEIndividual> couple = EATools.getCoupleInPopulation(selectedIndividuals, generator);

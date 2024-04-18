@@ -3,7 +3,6 @@
  */
 package com.i3s.app.rdfminer.generator.axiom;
 
-import com.i3s.app.rdfminer.Global;
 import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.Phenotype;
 import com.i3s.app.rdfminer.evolutionary.geva.Mapper.Production;
@@ -52,8 +51,6 @@ public class IncreasingTimePredictorAxiomGenerator extends AxiomGenerator {
 
 	private static final Logger logger = Logger.getLogger(IncreasingTimePredictorAxiomGenerator.class.getName());
 
-	Parameters parameters = Parameters.getInstance();
-
 	/**
 	 * An iterator on the classes to be used as the sub-class of the candidate
 	 * axiom.
@@ -87,16 +84,15 @@ public class IncreasingTimePredictorAxiomGenerator extends AxiomGenerator {
 	 * </p>
 	 */
 	protected final String statusFileName = "IncreasingTPAxiomGenerator-"
-			+ (parameters.getSparqlTimeOut() > 0 ? "-" + parameters.getSparqlTimeOut() : "") + ".status";
+			+ (this.getParameters().getSparqlTimeOut() > 0 ? "-" + this.getParameters().getSparqlTimeOut() : "") + ".status";
 
 	/**
 	 * Constructs a new axiom generator from a list of subclasses.
 	 * 
 	 * @param fileName the name of the file containing the list of subclasses.
 	 */
-	public IncreasingTimePredictorAxiomGenerator(String fileName) {
-		super(); // there is no grammar
-
+	public IncreasingTimePredictorAxiomGenerator(String fileName, Parameters parameters) {
+		super(parameters); // there is no grammar
 		Rule rule = new Rule();
 		try {
 			// Try to read the file with the subclass list:
@@ -143,7 +139,7 @@ public class IncreasingTimePredictorAxiomGenerator extends AxiomGenerator {
 			// Now that we have the sub-class iterator correctly positioned...
 			// We have to position the iterator to the super-class.
 			Expression expr = ExpressionFactory.createClass(subClass);
-			Set<String> types = getNodes(expr.createGraphPattern("?x", "?y") + "\n" + "?x a ?class . ");
+			Set<String> types = getNodes(expr.createGraphPattern("?x", "?y") + "\n" + "?x a ?class . ", this.getParameters());
 			superClassIterator = types.iterator();
 			// Unroll the super class iterator up to the saved super class:
 			while (superClassIterator.hasNext()) {
@@ -167,9 +163,9 @@ public class IncreasingTimePredictorAxiomGenerator extends AxiomGenerator {
 	 * @param sparql a SPARQL query
 	 * @return the results of the query
 	 */
-	protected Set<String> getNodes(String sparql) throws URISyntaxException, IOException {
+	protected Set<String> getNodes(String sparql, Parameters parameters) throws URISyntaxException, IOException {
 		logger.warn("Querying DBpedia with query " + sparql);
-		CoreseEndpoint endpoint = new CoreseEndpoint(Global.SPARQL_ENDPOINT, Global.PREFIXES);
+		CoreseEndpoint endpoint = new CoreseEndpoint(parameters);
 		List<String> results = endpoint.select("?class", sparql, false);
 		return new TreeSet<>(results);
 	}
@@ -199,7 +195,7 @@ public class IncreasingTimePredictorAxiomGenerator extends AxiomGenerator {
 			subClass = subClassIterator.next();
 			logger.debug("Subclass is now " + subClass);
 			Expression expr = ExpressionFactory.createClass(subClass);
-			types = getNodes(expr.createGraphPattern("?x", "?y") + "\n" + "?x a ?class . ");
+			types = getNodes(expr.createGraphPattern("?x", "?y") + "\n" + "?x a ?class . ", this.getParameters());
 			logger.debug("Found " + types.size() + " classes!");
 			// }
 			// while(/* types.size()>=30 || */ types.size()<30);

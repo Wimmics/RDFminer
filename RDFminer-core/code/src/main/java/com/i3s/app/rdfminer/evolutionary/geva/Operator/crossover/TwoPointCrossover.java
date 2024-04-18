@@ -53,9 +53,9 @@ public class TwoPointCrossover extends CrossoverOperation {
 	protected boolean fixedCrossoverPoint = false;
 	protected boolean codonsUsedSensitive = true;
 
-	public TwoPointCrossover() {
-		super();
-	}
+//	public TwoPointCrossover() {
+//		super();
+//	}
 
 	/**
 	 * Creates a new instance of TwoPointCrossover

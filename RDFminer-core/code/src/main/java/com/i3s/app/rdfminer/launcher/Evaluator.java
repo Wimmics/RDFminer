@@ -1,7 +1,5 @@
 package com.i3s.app.rdfminer.launcher;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.i3s.app.rdfminer.Endpoint;
 import com.i3s.app.rdfminer.Global;
 import com.i3s.app.rdfminer.Mod;
 import com.i3s.app.rdfminer.Parameters;
@@ -12,16 +10,8 @@ import com.i3s.app.rdfminer.entity.shacl.ShapesManager;
 import com.i3s.app.rdfminer.ht.HypothesisTesting;
 import com.i3s.app.rdfminer.output.Results;
 import com.i3s.app.rdfminer.sparql.corese.CoreseEndpoint;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,39 +22,45 @@ public class Evaluator {
 
 	private static final Logger logger = Logger.getLogger(Evaluator.class.getName());
 
-	public void run(int mod) throws ExecutionException, InterruptedException {
-		Parameters parameters = Parameters.getInstance();
-		switch (mod) {
+	private Results results;
+
+	private final Parameters parameters;
+
+	public Evaluator(Parameters parameters, Results results) {
+		this.parameters = parameters;
+		this.results = results;
+	}
+
+	public void run() throws ExecutionException, InterruptedException {
+		switch (this.parameters.getMod()) {
 			case Mod.AXIOM_ASSESSMENT:
 				// launch axiom evaluation
-				runAxiomEvaluation(parameters);
+				runAxiomEvaluation();
 				break;
 			case Mod.SHAPE_ASSESSMENT:
 				// launch shape evaluation
-				runShapeEvaluation(parameters);
+				runShapeEvaluation();
 				break;
 		}
 	}
 	
 	/**
 	 * The first version of RDFMiner launcher
-	 * @param parameters
 	 */
-	private void runAxiomEvaluation(Parameters parameters) throws InterruptedException, ExecutionException {
-		Results results = Results.getInstance();
+	private void runAxiomEvaluation() throws InterruptedException, ExecutionException {
 		// Prepare multi-threading
 		// We have a set of threads to compute each axioms
 		ExecutorService executor = Executors.newFixedThreadPool(Global.NB_THREADS);
 		Set<Callable<Axiom>> callables = new HashSet<>();
 		List<Axiom> axioms = new ArrayList<>();
 		// assessment of axioms
-		if (parameters.getAxioms() != null) {
+		if (this.parameters.getAxioms() != null) {
 			// iterate on content, 1 line = 1 axiom to assess
-			for (String phenotype : parameters.getAxioms().split("\n")) {
+			for (String phenotype : this.parameters.getAxioms().split("\n")) {
 				// add axiom assessment task into callables list
 				callables.add(() -> {
 					logger.info("Testing axiom: " + phenotype);
-					Axiom a = AxiomFactory.create(null, phenotype, new CoreseEndpoint(Global.SPARQL_ENDPOINT, Global.PREFIXES));
+					Axiom a = AxiomFactory.create(null, phenotype, this.parameters);
 					a.setEntityAsString(phenotype);
 					return a;
 				});
@@ -94,44 +90,41 @@ public class Evaluator {
 
 	/**
 	 * The first version of RDFMiner launcher
-	 * @param parameters
 	 */
-	private void runShapeEvaluation(Parameters parameters) {
-		Results results = Results.getInstance();
+	private void runShapeEvaluation() {
 		// init sparql endpoint
-		CoreseEndpoint endpoint = new CoreseEndpoint(parameters.getNamedDataGraph(), parameters.getPrefixes());
+		CoreseEndpoint endpoint = new CoreseEndpoint(this.parameters);
 		// init SHACL shapes manager
-		ShapesManager shapesManager = new ShapesManager(parameters.getShapes(), endpoint);
+		ShapesManager shapesManager = new ShapesManager(this.parameters.getShapes(), endpoint, this.parameters);
 		// iterate on shapes
-		HypothesisTesting ht = new HypothesisTesting();
+		HypothesisTesting ht = new HypothesisTesting(this.parameters.getProbShaclP(), this.parameters.getProbShaclAlpha());
 		for (int i=0; i<shapesManager.getPopulation().size(); i++) {
 			Shape shape = shapesManager.getPopulation().get(i);
 			ht.eval(shape);
 			// save results
-			results.addEntity(shape);
+			this.results.addEntity(shape);
 //			sendEntities();
 		}
 		logger.info("Done testing SHACL shape(s). Exiting.");
 		// System.exit(0);
 	}
 	
-	public static void writeAndFinish() {
-		logger.warn("Shutting down RDFMiner ...");
-	}
+//	public static void writeAndFinish() {
+//		logger.warn("Shutting down RDFMiner ...");
+//	}
 
-	public void sendEntities() {
-		Results results = Results.getInstance();
-		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-			HttpPut put = new HttpPut(Endpoint.API_RESULTS);
-			put.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(results), ContentType.APPLICATION_JSON));
-			logger.info("PUT request: updating entities ...");
-			HttpResponse response = httpClient.execute(put);
-			logger.info("Status code: " + response.getStatusLine().getStatusCode());
-			logger.info(new BasicResponseHandler().handleResponse(response));
-		} catch (IOException e) {
-			logger.warn("RDFminer-server is offline !");
-		}
-	}
+//	public void sendEntities() {
+//		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+//			HttpPut put = new HttpPut(Endpoint.API_RESULTS);
+//			put.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(this.results), ContentType.APPLICATION_JSON));
+//			logger.info("PUT request: updating entities ...");
+//			HttpResponse response = httpClient.execute(put);
+//			logger.info("Status code: " + response.getStatusLine().getStatusCode());
+//			logger.info(new BasicResponseHandler().handleResponse(response));
+//		} catch (IOException e) {
+//			logger.warn("RDFminer-server is offline !");
+//		}
+//	}
 }
 
 

@@ -10,12 +10,11 @@ import java.util.ArrayList;
 
 /**
  * This class is used to map all results on an object and generate a {@link org.json.JSONObject} of it.
- * This is a singleton
  * @author Rémi FELIN
  */
 public class Results {
 
-    private static Results instance = null;
+//    private static Results instance = null;
 
     private String _id;
 
@@ -72,12 +71,12 @@ public class Results {
 
     public void set_id(String _id) { this._id = _id; }
 
-    public static Results getInstance() {
-        if(instance == null) {
-            instance = new Results();
-        }
-        return instance;
-    }
+//    public static Results getInstance() {
+//        if(instance == null) {
+//            instance = new Results();
+//        }
+//        return instance;
+//    }
 
     public void resetLists() {
         this.entities = new ArrayList<>();

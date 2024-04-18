@@ -1,6 +1,7 @@
 package com.i3s.app.rdfminer.entity.shacl;
 
 import com.i3s.app.rdfminer.Global;
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.entity.Entity;
 import com.i3s.app.rdfminer.entity.axiom.Axiom;
 import com.i3s.app.rdfminer.entity.shacl.vocabulary.Shacl;
@@ -84,7 +85,8 @@ public class Shape extends Entity {
     /**
      *
      */
-    public Shape(GEIndividual individual, CoreseEndpoint endpoint) throws URISyntaxException, IOException {
+    public Shape(GEIndividual individual, CoreseEndpoint endpoint, Parameters parameters) throws URISyntaxException, IOException {
+        super(parameters);
         long t0 = getProcessCPUTime();
         this.individual = individual;
         this.content = this.individual.getPhenotype().getStringNoSpace();
@@ -116,7 +118,8 @@ public class Shape extends Entity {
 //        logger.info("elapsed time = " + elapsedTime + " ms.");
     }
 
-    public Shape(String content, CoreseEndpoint endpoint) throws URISyntaxException, IOException {
+    public Shape(String content, CoreseEndpoint endpoint, Parameters parameters) throws URISyntaxException, IOException {
+        super(parameters);
         long t0 = getProcessCPUTime();
         this.content = content;
         try {
@@ -233,7 +236,7 @@ public class Shape extends Entity {
      */
     public double computeFitness() {
         // compute a hypothesis testing
-        HypothesisTesting ht = new HypothesisTesting();
+        HypothesisTesting ht = new HypothesisTesting(this.getParameters().getProbShaclP(), this.getParameters().getProbShaclAlpha());
         ht.eval(this);
         // if the ht gives a success
         if(this.accepted) {

@@ -23,9 +23,11 @@ public class CandidatePopulation {
 	protected Generator generator;
 	protected ArrayList<GEChromosome> chromosomes;
 
+	private final Parameters parameters;
+
 	public CandidatePopulation(Generator generator) {
-		Parameters parameters = Parameters.getInstance();
 		this.generator = generator;
+		this.parameters = this.generator.getParameters();
 		this.chromosomes = new ArrayList<>(parameters.getPopulationSize());
 	}
 
@@ -35,10 +37,9 @@ public class CandidatePopulation {
 	 */
 	public ArrayList<GEIndividual> initialize()
 			throws NumberFormatException, IndexOutOfBoundsException {
-		Parameters parameters = Parameters.getInstance();
 		GEChromosome chromosome;
 		GEIndividual individual;
-		ArrayList<Double> fitnessList = new ArrayList<>(parameters.getPopulationSize());
+		ArrayList<Double> fitnessList = new ArrayList<>(this.parameters.getPopulationSize());
 		// TODO developed only in the case of random initialization -
 		// typeInitialization=1 ... Later need to develop other type of initialization.
 //		if (cache != null) {
@@ -60,7 +61,7 @@ public class CandidatePopulation {
 		this.chromosomes = initializeChromosomes();
 //		}
 		logger.info("Number of chromosomes created: " + chromosomes.size());
-		ArrayList<GEIndividual> population = new ArrayList<>(parameters.getPopulationSize());
+		ArrayList<GEIndividual> population = new ArrayList<>(this.parameters.getPopulationSize());
 		for (GEChromosome geChromosome : chromosomes) {
 			if (generator != null) {
 				// init individual
@@ -84,19 +85,18 @@ public class CandidatePopulation {
 	 * @return an array of chromosomes
 	 */
 	public ArrayList<GEChromosome> initializeChromosomes() {
-		Parameters parameters = Parameters.getInstance();
 		RandomNumberGenerator random;
 		random = new MersenneTwisterFast(System.currentTimeMillis());
 		GEChromosome chromosome;
 		int maxLenChromosome = 1000;
 		int n = 0;
-		while (n < parameters.getPopulationSize()) {
-			chromosome = new GEChromosome(parameters.getSizeChromosome());
-			chromosome.setMaxCodonValue(parameters.maxValCodon);
+		while (n < this.parameters.getPopulationSize()) {
+			chromosome = new GEChromosome(this.parameters.getSizeChromosome());
+			chromosome.setMaxCodonValue(this.parameters.maxValCodon);
 			chromosome.setMaxChromosomeLength(maxLenChromosome);
-			for (int i = 0; i < parameters.getSizeChromosome(); i++) {
+			for (int i = 0; i < this.parameters.getSizeChromosome(); i++) {
 				// typeInitialization = 1
-				chromosome.add(Math.abs(random.nextInt(parameters.maxValCodon)));
+				chromosome.add(Math.abs(random.nextInt(this.parameters.maxValCodon)));
 			}
 			chromosomes.add(chromosome);
 			n++;

@@ -14,6 +14,7 @@ import com.i3s.app.rdfminer.evolutionary.types.TypeCrossover;
 import com.i3s.app.rdfminer.evolutionary.types.TypeMutation;
 import com.i3s.app.rdfminer.evolutionary.types.TypeSelection;
 import com.i3s.app.rdfminer.generator.Generator;
+import com.i3s.app.rdfminer.output.Results;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -30,22 +31,28 @@ public class GrammaticalEvolution {
 
     private final Parameters parameters;
 
-    public GrammaticalEvolution() {
-        this.parameters = Parameters.getInstance();
+    private final Generator generator;
+
+    private Results results;
+
+    public GrammaticalEvolution(Generator generator, Results results) {
+        this.generator = generator;
+        this.parameters = this.generator.getParameters();
+        this.results = results;
     }
 
     /**
      * Implementation of GE
      */
-    public void run(Generator generator) {
+    public void run() {
         // log settings
         logUsedParameters(this.parameters);
         // Generate candidate population
         logger.info("Initializing candidate population ...");
         // init population as GEIndividuals
-        ArrayList<GEIndividual> candidatePopulation = new CandidatePopulation(generator).initialize();
+        ArrayList<GEIndividual> candidatePopulation = new CandidatePopulation(this.generator).initialize();
         // Mapping GEIndividuals as entities
-        ArrayList<Entity> entities = Fitness.initializePopulation(candidatePopulation, generator);
+        ArrayList<Entity> entities = Fitness.initializePopulation(candidatePopulation, this.generator);
         // Stop Criterion
         StopCriterion stopCriterion;
         // select the way to stop GE
@@ -53,22 +60,22 @@ public class GrammaticalEvolution {
             default:
             case 1:
                 // We stop the mining process based on the maximum time provided
-                stopCriterion = new ClockWorldStop();
+                stopCriterion = new ClockWorldStop(this.parameters.getMaxMiningTime());
                 break;
             case 2:
                 // Effort determines directly the number of iterations of GE
-                stopCriterion = new EffortStop();
+                stopCriterion = new EffortStop(this.parameters.getPopulationSize(), this.parameters.getEffort());
                 break;
         }
         // starting stop criterion (useful for clock-world stop option)
         stopCriterion.start();
         // start GE
-        EntityMining mining = new EntityMining();
+        EntityMining mining = new EntityMining(this.parameters, this.results);
         while (!stopCriterion.isFinish()) {
             logger.info("===============");
             logger.info("Generation: " + stopCriterion.getCurGeneration());
             // running an iteration ...
-            entities = mining.iterate(generator, entities, stopCriterion.getCurGeneration());
+            entities = mining.iterate(this.generator, entities, stopCriterion.getCurGeneration());
             // it means that the mining has been interrupted (exception or by calling /stop web service)
             // finishing GE and return current results
             if (entities == null) {

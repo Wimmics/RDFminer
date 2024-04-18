@@ -1,10 +1,9 @@
 package com.i3s.app.rdfminer.entity.shacl;
 
 import com.i3s.app.rdfminer.Global;
-import com.i3s.app.rdfminer.entity.Entity;
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.entity.shacl.vocabulary.Shacl;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEIndividual;
-import com.i3s.app.rdfminer.evolutionary.geva.Individuals.Genotype;
 import com.i3s.app.rdfminer.sparql.RequestBuilder;
 import com.i3s.app.rdfminer.sparql.corese.CoreseEndpoint;
 import org.apache.log4j.Logger;
@@ -34,6 +33,8 @@ public class ShapesManager {
 
     private static final Logger logger = Logger.getLogger(ShapesManager.class);
 
+    private final Parameters parameters;
+
     public Model model;
 
     public Repository db;
@@ -42,9 +43,8 @@ public class ShapesManager {
 
     public String content = "";
 
-    public ShapesManager() {}
-
-    public ShapesManager(String content, CoreseEndpoint endpoint) {
+    public ShapesManager(String content, CoreseEndpoint endpoint, Parameters parameters) {
+        this.parameters = parameters;
         // set content to submit in http request
         this.content = endpoint.getPrefixes() + "\n\n" + content;
         // init model
@@ -64,10 +64,11 @@ public class ShapesManager {
      *
      * @param individuals individuals generated
      */
-    public ShapesManager(ArrayList<GEIndividual> individuals, CoreseEndpoint endpoint) throws IOException, URISyntaxException {
+    public ShapesManager(ArrayList<GEIndividual> individuals, CoreseEndpoint endpoint, Parameters parameters) throws URISyntaxException, IOException {
+        this.parameters = parameters;
         this.content += Global.PREFIXES;
         for (GEIndividual individual : individuals) {
-            Shape s = new Shape(individual, endpoint);
+            Shape s = new Shape(individual, endpoint, parameters);
             population.add(s);
             this.content += s + "\n";
         }
@@ -76,9 +77,10 @@ public class ShapesManager {
 //        logger.info(population.size() + " SHACL Shapes ready to be evaluated !");
     }
 
-    public ShapesManager(GEIndividual individual, CoreseEndpoint endpoint) throws URISyntaxException, IOException {
+    public ShapesManager(GEIndividual individual, CoreseEndpoint endpoint, Parameters parameters) throws URISyntaxException, IOException {
+        this.parameters = parameters;
         this.content += Global.PREFIXES;
-        Shape s = new Shape(individual, endpoint);
+        Shape s = new Shape(individual, endpoint, parameters);
         population.add(s);
         this.content += s + "\n";
     }
@@ -130,7 +132,7 @@ public class ShapesManager {
                             }
                         }
                     }
-                    this.population.add(new Shape(sb.toString(), endpoint));
+                    this.population.add(new Shape(sb.toString(), endpoint, this.parameters));
                 }
             } catch (URISyntaxException | IOException e) {
                 e.printStackTrace();
@@ -143,18 +145,6 @@ public class ShapesManager {
 
     public List<Shape> getPopulation() {
         return population;
-    }
-
-    public void setDistinctPopulationFromEntities(ArrayList<Entity> entities, CoreseEndpoint endpoint) throws URISyntaxException, IOException {
-        ArrayList<Genotype> distinctGenotypes = new ArrayList<>();
-        for(Entity entity : entities) {
-            if(!distinctGenotypes.contains(entity.individual.getGenotype())) {
-                distinctGenotypes.add(entity.individual.getGenotype());
-                this.population.add(new Shape(entity.individual, endpoint));
-            }
-        }
-        // set whole content
-        setContent();
     }
 
     public void setContent() {

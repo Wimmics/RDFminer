@@ -1,5 +1,6 @@
 package com.i3s.app.rdfminer.evolutionary.tools;
 
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.entity.Entity;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.FitnessPackage.BasicFitness;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEChromosome;
@@ -106,7 +107,7 @@ public class EATools {
 		return notEvaluated;
 	}
 
-	public static ArrayList<Entity> getTimeCappedIndividuals(ArrayList<GEIndividual> individuals, List<Entity> evaluatedEntities) {
+	public static ArrayList<Entity> getTimeCappedIndividuals(ArrayList<GEIndividual> individuals, List<Entity> evaluatedEntities, Parameters parameters) {
 		ArrayList<GEIndividual> notEvaluated = new ArrayList<>(individuals);
 		ArrayList<Entity> toReturn = new ArrayList<>();
 		for(Entity evaluated : evaluatedEntities) {
@@ -121,7 +122,7 @@ public class EATools {
 		// for each not evaluated individuals, we will set an Entity with their individual with a fitness = 0
 		for(GEIndividual notEval : notEvaluated) {
 			logger.warn(notEval.getPhenotype().getStringNoSpace() + " will be considered as a candidate to reject");
-			Entity entity = new Entity();
+			Entity entity = new Entity(parameters);
 			// for SubClassOf axioms, we will set sub and super class
 			entity.argumentClasses = DLFactory.parseArguments(notEval.getPhenotype());
 			entity.setIndividual(notEval);

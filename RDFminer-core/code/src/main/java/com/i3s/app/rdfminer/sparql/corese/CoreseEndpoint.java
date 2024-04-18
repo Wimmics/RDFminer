@@ -39,28 +39,15 @@ public class CoreseEndpoint {
      */
     public String url;
 
-    /**
-     * The named data graph to query
-     */
-    public String namedGraphUri;
-
-    /**
-     * The prefixes that will be used to query the SPARQL endpoint.
-     */
-    private String prefixes;
-
     private final Parameters parameters;
 
     /**
      * Constructor of SparqlEndpoint
-     * @param namedGraphUri the named graph uri to query
-     * @param prefixes the prefixes used for the queries
+     * @param parameters
      */
-    public CoreseEndpoint(String namedGraphUri, String prefixes) {
+    public CoreseEndpoint(Parameters parameters) {
         this.url = Global.SPARQL_ENDPOINT;
-        this.namedGraphUri = namedGraphUri;
-        this.prefixes = prefixes;
-        this.parameters = Parameters.getInstance();
+        this.parameters = parameters;
     }
 
     /**
@@ -86,7 +73,7 @@ public class CoreseEndpoint {
         if (limitOffset.length > 1) {
             request += " OFFSET " + limitOffset[1];
         }
-        logger.debug(request);
+//        logger.debug(request);
         String resultAsJSON = query(Format.JSON, request);
         return ResultParser.getResultsFromVariable(var, resultAsJSON);
     }
@@ -102,7 +89,6 @@ public class CoreseEndpoint {
      * SELECT (count([<i>distinct</i>] <b>var</b>) as ?n) WHERE { <b>body</b> }
      */
     public int count(String var, String sparql, boolean distinct) throws URISyntaxException, IOException {
-        Parameters parameters = Parameters.getInstance();
         String request = parameters.getPrefixes() + "\n";
         request += "@timeout " + parameters.getSparqlTimeOut() + "\n";
         if (distinct) {
@@ -138,22 +124,21 @@ public class CoreseEndpoint {
         HashMap<String, String> params = new HashMap<>();
         // specify SPARQL and Format in parameters
         params.put("query", sparql);
-        params.put("default-graph-uri", this.namedGraphUri);
+        params.put("default-graph-uri", this.parameters.getNamedDataGraph());
         params.put("format", format);
         // call the get method and return it result
         return get(this.url, params);
     }
 
     public String getValidationReportFromServer(String content) throws URISyntaxException, IOException {
-        Parameters parameters = Parameters.getInstance();
         // fill params
         ArrayList<BasicHeader> bodyMap = new ArrayList<>();
         // 'query' is a mandatory param !
         bodyMap.add(new BasicHeader("query", "construct where {?s ?p ?o}"));
 //        if(parameters.getMod() == Mod.SHAPE_MINING) {
         bodyMap.add(new BasicHeader("mode", CoreseService.PROBABILISTIC_SHACL_EVALUATION));
-        bodyMap.add(new BasicHeader("default-graph-uri", this.namedGraphUri));
-        bodyMap.add(new BasicHeader("param", "p:" + parameters.getProbShaclP() + ";nT:" + Global.nTriples));
+        bodyMap.add(new BasicHeader("default-graph-uri", this.parameters.getNamedDataGraph()));
+        bodyMap.add(new BasicHeader("param", "p:" + this.parameters.getProbShaclP() + ";nT:" + Global.nTriples));
         bodyMap.add(new BasicHeader("content", content));
 //        } else {
 //            bodyMap.add(new BasicHeader("mode", CoreseService.SHACL_EVALUATION));
@@ -239,7 +224,7 @@ public class CoreseEndpoint {
     }
 
     public String getPrefixes() {
-        return prefixes;
+        return this.parameters.getPrefixes();
     }
 
 }

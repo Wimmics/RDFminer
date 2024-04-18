@@ -3,6 +3,7 @@
  */
 package com.i3s.app.rdfminer.entity.axiom.type;
 
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.entity.axiom.Axiom;
 import com.i3s.app.rdfminer.evolutionary.geva.Mapper.Symbol;
 import com.i3s.app.rdfminer.expression.Expression;
@@ -44,8 +45,8 @@ public class EquivalentClassesAxiom extends Axiom {
 	 * 
 	 *
 	 */
-	public EquivalentClassesAxiom(List<List<Symbol>> arguments, CoreseEndpoint endpoint) throws URISyntaxException, IOException {
-		super();
+	public EquivalentClassesAxiom(List<List<Symbol>> arguments, CoreseEndpoint endpoint, Parameters parameters) throws URISyntaxException, IOException {
+		super(parameters);
 		long t0 = getProcessCPUTime();
 		equivalentClass = new Expression[arguments.size()];
 		equivalentClassComplement = new Expression[equivalentClass.length];

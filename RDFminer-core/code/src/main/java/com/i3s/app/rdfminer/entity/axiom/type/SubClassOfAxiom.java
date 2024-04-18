@@ -57,8 +57,9 @@ public class SubClassOfAxiom extends Axiom {
 	 * @param endpoint             the sparql endpoint used for the queries
 	 */
 	public SubClassOfAxiom(List<Symbol> subClassExpression, List<Symbol> superClassExpression,
-						   CoreseEndpoint endpoint) {
-		super();
+						   CoreseEndpoint endpoint, Parameters parameters) {
+		super(parameters);
+//		super();
 		// set a t0 using the CPU time
 		long t0 = getProcessCPUTime();
 		subClass = ExpressionFactory.createClass(subClassExpression);
@@ -118,7 +119,6 @@ public class SubClassOfAxiom extends Axiom {
 	 */
 	@Override
 	public void update(CoreseEndpoint endpoint) throws URISyntaxException, IOException {
-		Parameters parameters = Parameters.getInstance();
 		logger.debug("Candidate axiom: SubClassOf(" + subClass + " " + superClass + ")");
 		// First of all, we verify if a such assumption does not already exists
 		// Only simple OWL 2 subClassOf axioms are considered in this case
@@ -185,7 +185,7 @@ public class SubClassOfAxiom extends Axiom {
 			ari = ARI();
 			return;
 			
-		} else if (parameters.getSparqlTimeOut() > 0) {
+		} else if (this.getParameters().getSparqlTimeOut() > 0) {
 //			logger.info("compute the number of exceptions with a timeout ...");
 			// Since the query to count exception is complex and may take very long to
 			// execute, we execute it with the user-supplied time out.

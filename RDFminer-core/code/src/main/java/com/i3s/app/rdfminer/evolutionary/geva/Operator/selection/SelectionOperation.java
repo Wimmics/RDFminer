@@ -29,7 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.i3s.app.rdfminer.evolutionary.geva.Operator.selection;
 
-import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEIndividual;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.Populations.Population;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.Populations.SimplePopulation;
@@ -68,8 +67,9 @@ public abstract class SelectionOperation implements Operation {
      * New instance based on RDFMiner parameters
      */
     public SelectionOperation() {
-        Parameters parameters = Parameters.getInstance();
-        this.size = (int) (parameters.getEliteSelectionRate() * parameters.getPopulationSize());
+//        Parameters parameters = Parameters.getInstance();
+//        this.size = (int) (parameters.getEliteSelectionRate() * parameters.getPopulationSize());
+//        this.size = 2;
         this.selectedPopulation = new SimplePopulation(this.size);
 //        logger.info("Size selection = " + this.size);
     }

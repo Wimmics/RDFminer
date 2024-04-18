@@ -29,7 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.i3s.app.rdfminer.evolutionary.geva.Operator.selection;
 
-import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.FitnessPackage.BasicFitness;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEChromosome;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEIndividual;
@@ -66,8 +65,9 @@ public class ProportionalRouletteWheel extends RouletteWheel implements Stochast
      */
     public ProportionalRouletteWheel() {
         super();
-        Parameters parameters = Parameters.getInstance();
-        this.size = (int) (parameters.getSelectionRate() * parameters.getPopulationSize());
+//        Parameters parameters = Parameters.getInstance();
+//        this.size = (int) (parameters.getSelectionRate() * parameters.getPopulationSize());
+//        this.size = 2;
         this.rng = new MersenneTwisterFast();
     }
 

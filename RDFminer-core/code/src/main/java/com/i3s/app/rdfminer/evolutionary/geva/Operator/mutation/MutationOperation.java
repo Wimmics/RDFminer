@@ -38,13 +38,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.i3s.app.rdfminer.evolutionary.geva.Operator.mutation;
 
-import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.evolutionary.geva.Exceptions.BadParameterException;
 import com.i3s.app.rdfminer.evolutionary.geva.FitnessEvaluation.FitnessFunction;
 import com.i3s.app.rdfminer.evolutionary.geva.Individuals.GEIndividual;
 import com.i3s.app.rdfminer.evolutionary.geva.Operator.Operations.Operation;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Constants;
-import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.MersenneTwisterFast;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.RandomNumberGenerator;
 import com.i3s.app.rdfminer.evolutionary.geva.Util.Random.Stochastic;
 
@@ -62,16 +60,16 @@ public abstract class MutationOperation implements Stochastic, Operation {
     protected RandomNumberGenerator rng;
     protected FitnessFunction fitnessFunction;
 
-    /**
-     * Creates a new instances of MutationOperation based on
-     * parameters provided by RDFMiner application
-     */
-    public MutationOperation() {
-        Parameters parameters = Parameters.getInstance();
-        this.probability = parameters.getProMutation();
-        this.rng = new MersenneTwisterFast();
-        this.noOfMutationCalls = 0;
-    }
+//    /**
+//     * Creates a new instances of MutationOperation based on
+//     * parameters provided by RDFMiner application
+//     */
+//    public MutationOperation() {
+//        Parameters parameters = Parameters.getInstance();
+//        this.probability = parameters.getProMutation();
+//        this.rng = new MersenneTwisterFast();
+//        this.noOfMutationCalls = 0;
+//    }
 
     /** Creates a new instance of MutationOperation
      * @param prob mutation probability
@@ -80,7 +78,7 @@ public abstract class MutationOperation implements Stochastic, Operation {
     public MutationOperation(double prob,RandomNumberGenerator rng) {
         this.probability = prob;
         this.rng = rng;
-        this.noOfMutationCalls=0;
+        this.noOfMutationCalls = 0;
     }
     
     /** Creates a new instance of MutationOperation

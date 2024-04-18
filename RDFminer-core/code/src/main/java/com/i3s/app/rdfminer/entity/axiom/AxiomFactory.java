@@ -3,6 +3,7 @@
  */
 package com.i3s.app.rdfminer.entity.axiom;
 
+import com.i3s.app.rdfminer.Parameters;
 import com.i3s.app.rdfminer.entity.axiom.type.DisjointClassesAxiom;
 import com.i3s.app.rdfminer.entity.axiom.type.OWLAxiom;
 import com.i3s.app.rdfminer.entity.axiom.type.SubClassOfAxiom;
@@ -101,10 +102,11 @@ public class AxiomFactory extends DLFactory {
 	 * @param syntax an axiom definition in OWL 2 functional-style syntax.
 	 * @return the corresponding axiom.
 	 */
-	public static Axiom create(GEIndividual individual, List<Symbol> syntax, CoreseEndpoint endpoint) throws URISyntaxException, IOException {
+	public static Axiom create(GEIndividual individual, List<Symbol> syntax, Parameters parameters) throws URISyntaxException, IOException {
 
 		Axiom axiom = null;
 		List<List<Symbol>> arguments = parseArguments(syntax);
+		CoreseEndpoint endpoint = new CoreseEndpoint(parameters);
 //		if(parameters.sparqlTimeOut != 0) {
 //			// set timeout
 //			endpoint.setTimeout(parameters.sparqlTimeOut);
@@ -113,7 +115,7 @@ public class AxiomFactory extends DLFactory {
 		if (syntax.get(0).equals(OWLAxiom.SUBCLASSOF)) {
 			require(arguments.size() == 2);
 //			RDFMiner.type = Type.SUBCLASSOF;
-			axiom = new SubClassOfAxiom(arguments.get(0), arguments.get(1), endpoint);
+			axiom = new SubClassOfAxiom(arguments.get(0), arguments.get(1), endpoint, parameters);
 			
 		} else if (syntax.get(0).equals(OWLAxiom.EQUIVALENTCLASSES)) {
 			// TO DO
@@ -122,7 +124,7 @@ public class AxiomFactory extends DLFactory {
 		} else if (syntax.get(0).equals(OWLAxiom.DISJOINTCLASSES)) {
 			require(arguments.size() > 1);
 //			RDFMiner.type = Type.DISJOINT_CLASSES;
-			axiom = new DisjointClassesAxiom(arguments, endpoint);
+			axiom = new DisjointClassesAxiom(arguments, endpoint, parameters);
 			
 		} else if (syntax.get(0).equals(OWLAxiom.DISJOINTUNION)) {
 			// TO DO
@@ -211,7 +213,7 @@ public class AxiomFactory extends DLFactory {
 	/**
 	 * Creates an axiom from a text string in OWL 2 functional-style syntax.
 	 */
-	public static Axiom create(GEIndividual individual, String str, CoreseEndpoint endpoint) throws URISyntaxException, IOException {
+	public static Axiom create(GEIndividual individual, String str, Parameters parameters) throws URISyntaxException, IOException {
 		List<Symbol> list = new ArrayList<Symbol>();
 		String symbol = "";
 		boolean blank = false;
@@ -235,7 +237,7 @@ public class AxiomFactory extends DLFactory {
 			list.add(new Symbol(symbol, Enums.SymbolType.TSymbol));
 		// for(int i = 0; i<list.size(); i++)
 		// System.out.println("symbol " + i + " = " + list.get(i));
-		return create(individual, list, endpoint);
+		return create(individual, list, parameters);
 	}
 
 }

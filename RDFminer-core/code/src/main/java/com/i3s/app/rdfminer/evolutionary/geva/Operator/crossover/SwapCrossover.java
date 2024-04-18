@@ -19,9 +19,9 @@ public class SwapCrossover extends CrossoverOperation {
     protected boolean fixedCrossoverPoint = false;
     protected boolean codonsUsedSensitive = true;
 
-    public SwapCrossover() {
-        super();
-    }
+//    public SwapCrossover() {
+//        super();
+//    }
 
     /**
      * Creates a new instance of SwapCrossover
