@@ -13,5 +13,5 @@ ObjectIntersectionOf := 'ObjectIntersectionOf' '(' Class ' ' Class ')'
 ObjectSomeValuesFrom := 'ObjectSomeValuesFrom' '(' Property ' ' Class ')'
 ObjectAllValuesFrom := 'ObjectAllValuesFrom' '(' Property ' ' Class ')'
 #---------------------------------------------------------------
-Class := '[sparql] ?Class a owl:Class .'
-Property := '[sparql] ?s ?Property ?o . FILTER ( isIRI(?o) ) .'
+Class := 'SPARQL ?Class a owl:Class .'
+Property := 'SPARQL ?s ?Property ?o . FILTER ( isIRI(?o) ) .'
