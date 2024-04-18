@@ -21,7 +21,7 @@ function get(req, res) {
                 }
                 return res.status(200).send(result);
             });
-        } else if (req.query.projectID != null) {
+        } else if (req.query.projectName != null) {
             Project.findOne({ userID: decoded.id, projectName: req.query.projectName }).then((project) => {
                 if (project != null) {
                     Result.findOne({ _id: project.resultsID }).then((result) => {
