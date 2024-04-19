@@ -73,6 +73,9 @@ services:
         CORESE_STORAGE: $CORESE_STORAGE
     ports:
       - '${CORESE_PORT}:${CORESE_PORT}'
+    volumes:
+      - ./corese/corese-server/build-docker/corese/data:/usr/local/corese/data
+      - ./corese/corese-server/build-docker/corese/log:/usr/local/corese/log
   # MongoDB
   mongo:
     restart: always
