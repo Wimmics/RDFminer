@@ -14,4 +14,4 @@ ObjectSomeValuesFrom := 'ObjectSomeValuesFrom' '(' Property ' ' Class ')'
 ObjectAllValuesFrom := 'ObjectAllValuesFrom' '(' Property ' ' Class ')'
 #---------------------------------------------------------------
 Class := 'SPARQL ?Class a owl:Class .'
-Property := 'SPARQL ?s ?Property ?o . FILTER ( isIRI(?o) ) .'
+Property := 'SPARQL ?s ?Property ?o .'

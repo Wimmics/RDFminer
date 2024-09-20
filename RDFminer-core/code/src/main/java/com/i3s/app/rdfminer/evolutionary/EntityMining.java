@@ -47,7 +47,7 @@ public class EntityMining {
         // i.e. apply GE process directly on individuals
         for(Entity entity : entities) {
             entitiesI.add(entity.individual);
-            logger.info("~~~ gen: " + entity.individual.getGenotype().toString() + " / phen: " + entity.individual.getPhenotype().getStringNoSpace());
+//            logger.info("~~~ gen: " + entity.individual.getGenotype().toString() + " / phen: " + entity.individual.getPhenotype().getStringNoSpace());
         }
         // Elites population
         logger.info("Searching the best individuals...");
@@ -87,10 +87,10 @@ public class EntityMining {
         // fill the evaluated individuals
         for (Future<Entity> future : futureEntities) {
             try {
-                if(this.parameters.timeCap != 0) {
+                if(this.parameters.getTimeCap() != 0) {
                     // we multiply the timecap by 2 to consider the maximum
                     // time-cap assessment for 2 childs
-                    newPopulation.add(future.get(this.parameters.timeCap, TimeUnit.MINUTES));
+                    newPopulation.add(future.get(this.parameters.getTimeCap(), TimeUnit.MINUTES));
                 } else {
                     newPopulation.add(future.get());
                 }

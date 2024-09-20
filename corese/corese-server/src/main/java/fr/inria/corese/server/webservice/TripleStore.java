@@ -363,13 +363,22 @@ public class TripleStore implements URLParam {
      * Evaluate shape
      * Execute query on shacl validation report
      */
-    Mappings shacl(String query, Dataset ds) throws EngineException {
+    Mappings shacl(String query, Dataset ds) throws EngineException, IOException {
         Graph shacl = Graph.create();
         Load ld = Load.create(shacl);
         try {
-            for (IDatatype dt : ds.getContext().get(URI)) {
-                ld.parse(dt.getLabel());
+            if(ds.getContext().get(URLParam.CONTENT) != null) {
+                InputStream stream = new ByteArrayInputStream(ds.getContext().get(URLParam.CONTENT).stringValue().getBytes(StandardCharsets.UTF_8));
+                ld.parse(stream, "", Load.TURTLE_FORMAT);
+                stream.close();
+            } else {
+                for (IDatatype dt : ds.getContext().get(URLParam.URI)) {
+                    ld.parse(dt.getLabel());
+                }
             }
+            // for (IDatatype dt : ds.getContext().get(URI)) {
+            //     ld.parse(dt.getLabel());
+            // }
         } catch (LoadException ex) {
             logger.error(ex.getMessage());
             throw new EngineException(ex);

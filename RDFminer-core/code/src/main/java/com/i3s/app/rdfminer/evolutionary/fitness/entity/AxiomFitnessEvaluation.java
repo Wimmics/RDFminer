@@ -65,8 +65,8 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 		// We recover our axioms
 		for (Future<Entity> entity : futureEntities) {
 			try {
-				if(parameters.timeCap != 0)
-					entities.add(entity.get(parameters.timeCap, TimeUnit.MINUTES));
+				if(parameters.getTimeCap() != 0)
+					entities.add(entity.get(parameters.getTimeCap(), TimeUnit.MINUTES));
 				else
 					entities.add(entity.get());
 			} catch (InterruptedException | ExecutionException e) {
@@ -89,7 +89,7 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 		// set new population
 		ArrayList<Entity> newPopulation = new ArrayList<>();
 		// manage not evaluated axioms
-		if(parameters.timeCap != 0) {
+		if(parameters.getTimeCap() != 0) {
 			newPopulation.addAll(EATools.getTimeCappedIndividuals(individuals, entities, parameters));
 		}
 		// Check if Novelty Search is enabled
@@ -143,8 +143,8 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 		// We recover our axioms
 		for (Future<Entity> entity : futureEntities) {
 			try {
-				if(parameters.timeCap != 0)
-					entities.add(entity.get(parameters.timeCap, TimeUnit.MINUTES));
+				if(parameters.getTimeCap() != 0)
+					entities.add(entity.get(parameters.getTimeCap(), TimeUnit.MINUTES));
 				else
 					entities.add(entity.get());
 			} catch (InterruptedException | ExecutionException e) {
@@ -178,11 +178,11 @@ public class AxiomFitnessEvaluation implements FitnessEvaluation {
 		// set new population
 		ArrayList<Entity> newPopulation = new ArrayList<>(entities);
 		// manage not evaluated axioms
-		if(parameters.timeCap != 0) {
+		if(parameters.getTimeCap() != 0) {
 			newPopulation.addAll(EATools.getTimeCappedEntities(population, entities));
 		}
 		// Update fitness of individuals from a population
-		//			entity.setFitness(new BasicFitness(entity.fitness, entity));
+		// entity.setFitness(new BasicFitness(entity.fitness, entity));
 		return newPopulation;
 	}
 

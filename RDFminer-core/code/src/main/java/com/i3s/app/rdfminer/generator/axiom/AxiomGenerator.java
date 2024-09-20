@@ -150,7 +150,8 @@ public abstract class AxiomGenerator extends Generator {
 			} catch (FileNotFoundException e) {
 				logger.warn("Could not create cache for symbol " + symbol + ".");
 			}
-			List<String> results = endpoint.select("?" + symbol, sparql, true);
+			// we limit the query to the first 1,000 nodes finded
+			List<String> results = endpoint.select("?" + symbol, sparql, true, 1000);
 			if(results.size() > 0) {
 				for(String result : results) {
 					// declare a new production

@@ -56,7 +56,7 @@
                 <CAvatar class="clickable" src="assets/garbage.png" @click="deletePopup(project.projectName)" /> -->
                     </CTableDataCell>
                     <CTableDataCell :color="getColor(project.status)" style="font-weight: bold;">
-                        <CSpinner :variant="project.status < 1 ? 'grow' : 'border'" v-if="project.status != 2 || project.status != 3" size="sm"
+                        <CSpinner :variant="project.status < 1 ? 'grow' : 'border'" v-if="project.status != 2 && project.status != 3" size="sm"
                             style="margin-right:10px;" />{{
         status[project.status].text }}
                     </CTableDataCell>

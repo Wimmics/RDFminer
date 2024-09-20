@@ -15,7 +15,7 @@ public class EffortStop implements StopCriterion {
 
     @Override
     public boolean isFinish() {
-        return this.popSize * this.curGeneration >= this.effort;
+        return this.popSize * this.curGeneration > this.effort;
     }
 
     @Override

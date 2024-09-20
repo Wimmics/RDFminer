@@ -87,7 +87,7 @@ public class SubClassOfAxiom extends Axiom {
 		}
 		// set elapsedTime as a CPU usage time
 		elapsedTime = getProcessCPUTime() - t0;
-		logger.info("ARI = " + ari + "; computed in " + elapsedTime + " ms.");
+//		logger.info("ARI = " + ari + "; computed in " + elapsedTime + " ms.");
 	}
 
 	/**

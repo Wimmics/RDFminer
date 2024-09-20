@@ -96,7 +96,8 @@ public abstract class ShapeGenerator extends Generator {
             logger.info("Cache for " + symbol + " not found. Querying SPARQL endpoint");
             logger.info("Querying SPARQL endpoint for symbol <" + symbol + "> ...");
             CoreseEndpoint endpoint = new CoreseEndpoint(this.getParameters());
-            List<String> results = endpoint.select("?" + symbol, sparql, true);
+            // we limit the query to the first 1,000 nodes finded
+            List<String> results = endpoint.select("?" + symbol, sparql, true, 1000);
             if(results.size() > 0) {
                 PrintStream cache = null;
                 try {

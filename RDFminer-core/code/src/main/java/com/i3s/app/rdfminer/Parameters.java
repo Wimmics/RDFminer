@@ -110,7 +110,7 @@ public class Parameters {
 	// @TODO: map it on json input when the implementation is finished
 	private boolean useNoveltySearch = false;
 
-	public long timeCap = 0;
+	private long timeCap = 1;
 
 	public boolean grammaticalEvolution;
 
@@ -222,7 +222,9 @@ public class Parameters {
 		return useNoveltySearch;
 	}
 
-//	@JsonCreator
+	public long getTimeCap() { return timeCap; }
+
+	//	@JsonCreator
 //	public static synchronized Parameters getInstance() {
 //		if(instance == null) {
 //			instance = new Parameters();
